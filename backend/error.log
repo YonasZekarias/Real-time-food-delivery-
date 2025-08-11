@@ -10,3 +10,5 @@
 {"level":"error","message":"Cannot set headers after they are sent to the client","timestamp":"2025-08-02T10:49:17.983Z"}
 {"level":"error","message":"err.message","timestamp":"2025-08-02T10:49:17.986Z"}
 {"level":"error","message":"secretOrPrivateKey must have a value","timestamp":"2025-08-05T17:04:35.882Z"}
+{"level":"error","message":"Redis connection error: logger.errored is not a function","timestamp":"2025-08-11T20:39:28.671Z"}
+{"level":"error","message":"MongoDB Atlas connection errpr: Server selection timed out after 30000 ms","timestamp":"2025-08-11T20:39:59.505Z"}
