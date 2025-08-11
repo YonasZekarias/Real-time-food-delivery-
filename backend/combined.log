@@ -277,3 +277,6 @@
 {"level":"info","message":"Server running on port 5000","timestamp":"2025-08-06T10:07:10.112Z"}
 {"level":"info","message":"Redis connected successfully","timestamp":"2025-08-06T10:07:10.145Z"}
 {"level":"info","message":"MongoDB Atlas connected successfully!","timestamp":"2025-08-06T10:07:13.280Z"}
+{"level":"info","message":"Server running on port 5000","timestamp":"2025-08-11T20:39:28.583Z"}
+{"level":"error","message":"Redis connection error: logger.errored is not a function","timestamp":"2025-08-11T20:39:28.671Z"}
+{"level":"error","message":"MongoDB Atlas connection errpr: Server selection timed out after 30000 ms","timestamp":"2025-08-11T20:39:59.505Z"}
