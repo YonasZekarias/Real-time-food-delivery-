@@ -1,7 +1,6 @@
-// store/menuStore.js
 import { create } from "zustand";
 
-export const useMenuStore = create((set) => ({
+export const useMenuManagementStore = create((set) => ({
   menuItems: [],
   loading: false,
   error: null,

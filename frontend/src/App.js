@@ -11,16 +11,12 @@ import FeedbackPage from "./pages/customer/FeedBack";
 import NearbyRestaurants from "./pages/customer/NearbyRestaurants";
 import Sidebar from "./components/Sidebar";
 
-import MenuPage from "./pages/MenuPage";
-import CartPage from "./pages/CartPage";
-import CheckoutPage from "./pages/CheckoutPage";
-import OrderConfirmationPage from "./pages/OrderConfirmationPage";
-import Navbar from "./components/Navbar";
-import MenuManagement from "./pages/restaurant/MenuManagementpage";
-import Inventory from "./pages/restaurant/InventoryPage";
 import MenuPage from "./pages/customer/MenuPage";
 import CartPage from "./pages/customer/CartPage";
 import CheckoutPage from "./pages/customer/CheckoutPage";
+import Navbar from "./components/Navbar";
+import MenuManagement from "./pages/restaurant/MenuManagementpage";
+import Inventory from "./pages/restaurant/InventoryPage";
 import OrderConfirmationPage from "./pages/customer/OrderConfirmationPage";
 import Dashboard from "./pages/restaurant/Dashboard";
 
@@ -50,7 +46,10 @@ function App() {
           {/* Restaurant Pages */}
           {/* <Navbar /> */}
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/menu/:restaurantId" element={<MenuManagement />} />
+          <Route
+            path="/MenuManagement/:restaurantId"
+            element={<MenuManagement />}
+          />
           <Route path="/inventory/:restaurantId" element={<Inventory />} />
         </Routes>
       </div>
