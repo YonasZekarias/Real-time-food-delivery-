@@ -5,13 +5,11 @@ const authRoutes = require("./routes/auth.Routes");
 const restaurantRoutes = require("./routes/restaurant.route");
 
 const swaggerUi = require("swagger-ui-express");
-const swaggerFile = require("./swagger-output.json"); 
+const swaggerFile = require("./swagger-output.json");
 
 const adminRoutes = require("./routes/admin.routes");
 const cartRoutes = require("./routes/cart.routes");
 const orderRoutes = require("./routes/order.routes");
-
-
 
 const cors = require("cors");
 const connectDB = require("./config/db");
@@ -22,7 +20,7 @@ const cookieParser = require("cookie-parser");
 const app = express();
 
 // Middlewares
-app.use(cors({ origin: "*", credentials: true }));
+app.use(cors({ origin: "http://localhost:3000", credentials: true }));
 
 app.use(express.json());
 app.use(cookieParser());

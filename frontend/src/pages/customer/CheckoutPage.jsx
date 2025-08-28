@@ -1,14 +1,50 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import useCartStore from "../../store/customer/cartStore";
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  useMap,
+  useMapEvents,
+  Popup,
+} from "react-leaflet";
+import { createOrder } from "../../api/customer/orderApi.js";
+
+function LocationMarker({ position, setPosition }) {
+  const map = useMap();
+
+  useEffect(() => {
+    if (!position) {
+      map.locate().on("locationfound", function (e) {
+        setPosition(e.latlng);
+        map.flyTo(e.latlng, map.getZoom());
+      });
+    }
+  }, [map, position, setPosition]);
+
+  useMapEvents({
+    click(e) {
+      setPosition(e.latlng);
+      map.flyTo(e.latlng, map.getZoom());
+    },
+  });
+
+  return position === null ? null : (
+    <Marker position={position}>
+      <Popup>Your selected location</Popup>
+    </Marker>
+  );
+}
 
 const CheckoutPage = () => {
   const navigate = useNavigate();
-
   const { cartItems, clearCart } = useCartStore();
 
-  const [address, setAddress] = React.useState("");
-  const [paymentMethod, setPaymentMethod] = React.useState("cod");
+  const [position, setPosition] = useState(null);
+  const [paymentMethod, setPaymentMethod] = React.useState("cash");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const total = cartItems.reduce(
     (sum, item) => sum + item.price * item.quantity,
@@ -16,11 +52,31 @@ const CheckoutPage = () => {
   );
   const formatCurrency = (n) => `$${Number(n || 0).toFixed(2)}`;
 
-  const handlePlaceOrder = () => {
-    navigate("/order-confirmation", {
-      state: { cartItems, total, address, paymentMethod },
-    });
-    clearCart();
+  const handlePlaceOrder = async () => {
+    if (!position) {
+      setError("Please select a delivery location.");
+      return;
+    }
+    setLoading(true);
+    setError(null);
+    try {
+      const orderData = {
+        deliveryLocation: {
+          type: "Point",
+          coordinates: [position.lng, position.lat],
+        },
+        paymentMethod,
+      };
+      const response = await createOrder(orderData);
+      clearCart();
+      navigate("/order-confirmation", {
+        state: { order: response.data },
+      });
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (cartItems.length === 0)
@@ -49,15 +105,28 @@ const CheckoutPage = () => {
         </h1>
 
         <div className="mb-6">
-          <h2 className="text-xl font-semibold mb-2 text-gray-800">Address</h2>
+          <h2 className="text-xl font-semibold mb-2 text-gray-800">
+            Delivery Location
+          </h2>
           <div className="group relative bg-gray-100/80 border border-gray-200/80 rounded-xl p-3 hover:bg-yellow-100/60 transition-all duration-300">
-            <textarea
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-              placeholder="Enter your delivery address"
-              rows={4}
-              className="w-full bg-transparent placeholder-gray-500 text-gray-800 border-0 focus:outline-none focus:ring-0 resize-y"
-            />
+            <MapContainer
+              center={{ lat: 51.505, lng: -0.09 }}
+              zoom={13}
+              scrollWheelZoom={false}
+              style={{ height: "400px" }}
+            >
+              <TileLayer
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              />
+              <LocationMarker position={position} setPosition={setPosition} />
+            </MapContainer>
+            {position && (
+              <p className="text-center text-sm text-gray-600 mt-2">
+                Selected Location: {position.lat.toFixed(4)},{" "}
+                {position.lng.toFixed(4)}
+              </p>
+            )}
           </div>
         </div>
 
@@ -70,12 +139,23 @@ const CheckoutPage = () => {
               <input
                 type="radio"
                 name="payment"
-                value="cod"
-                checked={paymentMethod === "cod"}
+                value="cash"
+                checked={paymentMethod === "cash"}
                 onChange={(e) => setPaymentMethod(e.target.value)}
                 className="accent-red-600 focus:ring-yellow-500 focus:outline-none"
               />
               <span className="text-gray-800">Cash on Delivery</span>
+            </label>
+            <label className="flex items-center gap-3 bg-gray-100/80 border border-gray-200/80 rounded-xl p-3 hover:bg-yellow-100/60 transition-all duration-300 cursor-pointer">
+              <input
+                type="radio"
+                name="payment"
+                value="mobile_banking"
+                checked={paymentMethod === "mobile_banking"}
+                onChange={(e) => setPaymentMethod(e.target.value)}
+                className="accent-red-600 focus:ring-yellow-500 focus:outline-none"
+              />
+              <span className="text-gray-800">Mobile Banking</span>
             </label>
             <label className="flex items-center gap-3 bg-gray-100/80 border border-gray-200/80 rounded-xl p-3 hover:bg-yellow-100/60 transition-all duration-300 cursor-pointer">
               <input
@@ -86,7 +166,7 @@ const CheckoutPage = () => {
                 onChange={(e) => setPaymentMethod(e.target.value)}
                 className="accent-red-600 focus:ring-yellow-500 focus:outline-none"
               />
-              <span className="text-gray-800">Credit/Debit Card (mock)</span>
+              <span className="text-gray-800">Credit/Debit Card</span>
             </label>
           </div>
         </div>
@@ -117,11 +197,22 @@ const CheckoutPage = () => {
           </p>
         </div>
 
+        {error && (
+          <div
+            className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl relative mb-4"
+            role="alert"
+          >
+            <strong className="font-bold">Error: </strong>
+            <span className="block sm:inline">{error}</span>
+          </div>
+        )}
+
         <button
           onClick={handlePlaceOrder}
-          className="w-full inline-flex items-center justify-center font-semibold py-3 rounded-xl shadow-md transition-all duration-300 bg-red-600 text-white hover:bg-red-700 focus:outline-none focus:ring-4 focus:ring-red-500/40 active:scale-[0.98]"
+          disabled={!position || loading}
+          className="w-full inline-flex items-center justify-center font-semibold py-3 rounded-xl shadow-md transition-all duration-300 bg-red-600 text-white hover:bg-red-700 focus:outline-none focus:ring-4 focus:ring-red-500/40 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          Place Order
+          {loading ? "Placing Order..." : "Place Order"}
         </button>
       </div>
     </div>

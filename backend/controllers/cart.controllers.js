@@ -7,6 +7,9 @@ const logger = require("../utils/logger");
 exports.addToCart = async (req, res) => {
   try {
     const { menuItemId, quantity, restaurantId } = req.body;
+    logger.info("=== BACKEND ADD TO CART DEBUG ===");
+    logger.info("Request body:", { menuItemId, quantity, restaurantId });
+    
     const restaurant = await Restaurant.findOne({
       _id: restaurantId,
       deleted: false,
@@ -14,7 +17,12 @@ exports.addToCart = async (req, res) => {
     if (!restaurant)
       return res.status(404).json({ message: "Restaurant not found" });
 
+    logger.info("Restaurant found:", { name: restaurant.name, menuCount: restaurant.menu.length });
+    logger.info("Looking for menu item with ID:", menuItemId);
+    
     const menuItem = restaurant.menu.id(menuItemId);
+    logger.info("Menu item found:", menuItem ? { id: menuItem._id, name: menuItem.name, price: menuItem.price } : "NOT FOUND");
+    
     if (!menuItem || !menuItem.inStock)
       return res
         .status(404)
@@ -40,12 +48,14 @@ exports.addToCart = async (req, res) => {
     if (existingItem) {
       existingItem.quantity += quantity;
     } else {
-      cart.items.push({
+      const newItem = {
         menuItemId,
         name: menuItem.name,
         price: menuItem.price,
         quantity,
-      });
+      };
+      logger.info("Adding new item to cart:", newItem);
+      cart.items.push(newItem);
     }
 
     cart.total = cart.items.reduce(
@@ -53,6 +63,7 @@ exports.addToCart = async (req, res) => {
       0
     );
 
+    logger.info("Final cart items before save:", cart.items.map(item => ({ name: item.name, price: item.price, quantity: item.quantity })));
     await cart.save();
     await redisClient.del(`cart:${req.user._id}`);
 

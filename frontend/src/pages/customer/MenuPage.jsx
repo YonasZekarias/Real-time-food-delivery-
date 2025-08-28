@@ -55,6 +55,7 @@ const MenuPage = () => {
   // Handle adding item to cart and refreshing store
   const handleAddToCart = async (item) => {
     try {
+      console.log("MenuPage: handleAddToCart called with:", item);
       await addToCart(item, restaurantId); // add to backend
       await loadCart(); // reload full cart
     } catch (err) {

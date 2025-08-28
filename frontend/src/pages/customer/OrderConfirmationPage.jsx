@@ -1,28 +1,24 @@
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import useCartStore from "../../store/customer/cartStore";
 
 const currency = (n) => (typeof n === "number" ? n.toFixed(2) : n);
 
 const OrderConfirmationPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { cartItems, clearCart } = useCartStore();
 
-  const { total, address, paymentMethod } = location.state || {};
+  const { order } = location.state || {};
+
+  const handleTrackOrder = () => {
+    // Navigate to order history for now
+    navigate("/order-history");
+  };
 
   const handleFeedback = () => {
     navigate("/feedback");
   };
 
-  const handleConfirmOrder = () => {
-    // This will just navigate to the tracking page without creating an order
-    // as the API is not yet ready.
-    clearCart();
-    navigate("/ordertracking");
-  };
-
-  if (!cartItems || cartItems.length === 0)
+  if (!order) {
     return (
       <div className="relative min-h-screen bg-white flex items-center justify-center p-4 sm:p-6">
         <div className="pointer-events-none absolute -top-10 -right-10 w-1/3 h-1/3 bg-yellow-300 rounded-full filter blur-[150px] opacity-20" />
@@ -38,6 +34,7 @@ const OrderConfirmationPage = () => {
         </div>
       </div>
     );
+  }
 
   return (
     <div className="relative bg-white min-h-screen overflow-hidden py-4 sm:py-6 md:py-10 px-4 sm:px-6">
@@ -56,10 +53,11 @@ const OrderConfirmationPage = () => {
           <div className="mb-6 space-y-3 text-sm sm:text-base">
             <p className="text-gray-800">
               <span className="font-semibold text-gray-800">
-                Delivery Address:
+                Delivery Location:
               </span>{" "}
               <span className="text-gray-700 break-words">
-                {address || "—"}
+                {order.deliveryLocation.coordinates[1].toFixed(4)},{" "}
+                {order.deliveryLocation.coordinates[0].toFixed(4)}
               </span>
             </p>
             <p className="text-gray-800">
@@ -67,8 +65,12 @@ const OrderConfirmationPage = () => {
                 Payment Method:
               </span>{" "}
               <span className="text-gray-700 capitalize">
-                {paymentMethod || "—"}
+                {order.paymentMethod}
               </span>
+            </p>
+            <p className="text-gray-800">
+              <span className="font-semibold text-gray-800">Order ID:</span>{" "}
+              <span className="text-gray-700">{order._id}</span>
             </p>
           </div>
 
@@ -77,7 +79,7 @@ const OrderConfirmationPage = () => {
               Order Summary
             </h2>
             <ul className="space-y-2 text-sm sm:text-base">
-              {cartItems.map((item) => (
+              {order.items.map((item) => (
                 <li
                   key={item._id}
                   className="flex justify-between items-center border-b border-gray-200/80 pb-2 text-gray-800"
@@ -94,16 +96,16 @@ const OrderConfirmationPage = () => {
             </ul>
             <p className="mt-4 text-base sm:text-lg font-extrabold text-gray-800 flex justify-between items-center">
               <span>Total:</span>
-              <span className="text-red-600">${currency(total)}</span>
+              <span className="text-red-600">${currency(order.total)}</span>
             </p>
           </div>
 
           <div className="mt-6 text-center">
             <button
-              onClick={handleConfirmOrder}
+              onClick={handleTrackOrder}
               className="w-full max-w-xs mx-auto inline-flex items-center justify-center font-semibold py-3 rounded-xl shadow-md transition-all duration-300 bg-red-600 text-white hover:bg-red-700 focus:outline-none focus:ring-4 focus:ring-red-500/40 active:scale-[0.98]"
             >
-              Confirm Order
+              Track Order
             </button>
             <p className="mt-4 text-sm">
               <span className="text-gray-600">

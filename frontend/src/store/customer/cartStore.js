@@ -17,24 +17,41 @@ const useCartStore = create((set, get) => ({
     set({ loading: true });
     try {
       const data = await fetchCart();
+      console.log("Cart loaded:", data);
       set({
         cartItems: data.data.items || [],
         restaurantId: data.data.restaurantId,
         loading: false,
       });
     } catch (err) {
+      console.error("Error loading cart:", err);
       set({ error: err.message, loading: false });
     }
   },
 
   addToCart: async (item, restaurantId) => {
     try {
+      console.log("=== ADD TO CART DEBUG ===");
+      console.log("1. Frontend item clicked:", {
+        _id: item._id,
+        name: item.name,
+        price: item.price,
+        description: item.description,
+        fullItem: item
+      });
+      console.log("2. Restaurant ID:", restaurantId);
+      
       const res = await addCartItem(item, restaurantId);
+      
+      console.log("3. Backend response:", res);
+      console.log("4. Cart items returned:", res.data.items);
+      
       set({
         cartItems: res.data.items || [],
         restaurantId: res.data.restaurantId,
       });
     } catch (err) {
+      console.error("Error adding to cart:", err);
       set({ error: err.message });
     }
   },
@@ -76,6 +93,15 @@ const useCartStore = create((set, get) => ({
     } catch (err) {
       set({ error: err.message });
     }
+  },
+
+  // Force clear cart - useful when restaurant doesn't exist
+  forceCleared: () => {
+    set({
+      cartItems: [],
+      restaurantId: null,
+      error: null,
+    });
   },
 
   getTotalQuantity: () =>

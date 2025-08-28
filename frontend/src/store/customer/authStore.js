@@ -56,7 +56,9 @@ const useAuthStore = create((set) => ({
         password,
         role,
       });
-      set({ pendingUser: { id: response.data.data.userid, email, phone, role } });
+      set({
+        pendingUser: { id: response.data.data.userid, email, phone, role },
+      });
       return { success: true };
     } catch (err) {
       return {
