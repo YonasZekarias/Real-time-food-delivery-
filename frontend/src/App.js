@@ -6,13 +6,13 @@ import ForgotPassword from "./pages/customer/ForgotPassword";
 import ResetPassword from "./pages/customer/ResetPassword";
 import { Landing_Page } from "./pages/customer/Landing Page";
 import VerificationCode from "./components/VerificationCode";
-import OrderHistory from "./pages/customer/OrderHistory";
+import OrderHistory from "./pages/OrderHistory";
 import FeedbackPage from "./pages/customer/FeedBack";
 import NearbyRestaurants from "./pages/customer/NearbyRestaurants";
 import Sidebar from "./components/Sidebar";
 import MenuPage from "./pages/customer/MenuPage";
 import CartPage from "./pages/customer/CartPage";
-import OrderStatus from "./pages/customer/OrderStatus"; // Assuming OrderStatus is also a customer-facing page and moved to the customer folder for consistency
+import OrderStatus from "./pages/OrderStatus"; // Assuming OrderStatus is also a customer-facing page and moved to the customer folder for consistency
 import CheckoutPage from "./pages/customer/CheckoutPage";
 import Navbar from "./components/Navbar"; // Included, though usage is commented out in Routes
 import OrderConfirmationPage from "./pages/customer/OrderConfirmationPage";
@@ -22,12 +22,17 @@ import Dashboard from "./pages/restaurant/Dashboard";
 import MenuManagement from "./pages/restaurant/MenuManagementpage";
 import Inventory from "./pages/restaurant/InventoryPage";
 
+import AdminDashboard from "./pages/AdminDashboard";
+import UserManagement from "./pages/UserManagement"
+
 function App() {
   return (
     <Router>
       <div className="min-h-screen bg-white/90">
+      
         <Routes>
           {/* Customer Pages */}
+          <Route path="/admin/*" element={<AdminDashboard />} />
           <Route path="/" element={<Landing_Page />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
@@ -43,6 +48,9 @@ function App() {
           <Route path="/checkout" element={<CheckoutPage />} />
           <Route path="/order-confirmation" element={<OrderConfirmationPage />} />
           <Route path="/order-status" element={<OrderStatus />} />
+          <Route path="/user-management" element={<UserManagement />} />
+      
+
 
           {/* Restaurant Pages */}
           {/* <Navbar /> */} {/* If Navbar is needed for restaurant pages, uncomment and place within specific routes or a layout component */}

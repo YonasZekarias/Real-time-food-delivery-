@@ -9,9 +9,8 @@ export default function OrderHistory() {
 
   useEffect(() => {
     fetch("http://localhost:5000/api/delivery/orders/all", {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`, // if JWT auth
-      },
+      method: "GET",
+      credentials: "include", // if cookie auth
     })
       .then((res) => res.json())
       .then((data) => {
