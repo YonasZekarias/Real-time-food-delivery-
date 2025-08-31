@@ -114,7 +114,8 @@ const getAllUsers = async (req , res) => {
 }
 const getUserByRoles = async (req, res) => {
   try {
-    const { error, value } = userRoleSchema.validate(req.body, {
+    console.log(req.query)
+    const { error, value } = userRoleSchema.validate(req.query, {
       abortEarly: false,
     });
 
@@ -144,7 +145,7 @@ const getUserByRoles = async (req, res) => {
       data: { count, users },
     });
   } catch (err) {
-    logger.error("Error fetching users:", err.message);
+    logger.error("Error fetching users:", err);
     res.status(500).json({ message: "Server error" });
   }
 };

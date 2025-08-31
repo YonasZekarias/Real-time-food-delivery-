@@ -2,6 +2,7 @@ const express = require("express");
 const {
   createOrder,
   getOrderHistory,
+  changeOrderStatus
   changeOrderStatus,
   storeFeedback, // This function comes from the 'beki.b' branch
 } = require("../controllers/order.controller");
@@ -16,6 +17,8 @@ const router = express.Router();
 
 router.post(
   "/",
+  protect,
+  restrictTo("customer", "restaurant", "admin"),
   protect, // Keep active as per the 'main' branch's intention
   restrictTo("customer", "restaurant", "admin"), // Keep active as per the 'main' branch's intention
   validateCreateOrder,
@@ -24,6 +27,10 @@ router.post(
 
 router.get(
   "/all",
+  protect,
+  restrictTo("customer", "restaurant", "admin"),
+  getOrderHistory
+);
   protect, // Keep active as per the 'main' branch's intention
   restrictTo("customer", "restaurant", "admin"), // Keep active as per the 'main' branch's intention
   getOrderHistory

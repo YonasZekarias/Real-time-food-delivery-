@@ -35,6 +35,7 @@ exports.register = async (req, res) => {
       logger.error(`Redis set error: ${err.message}`);
     }
 
+    console.log({verificationCode})
     res.status(200).json({
       status: "success",
       data: { userid: user._id, role: user.role },
