@@ -146,7 +146,7 @@ exports.login = async (req, res) => {
     res.status(200).json({
       token,
       status: "success",
-      data: { userId: user._id, role: user.role },
+      data: { userId: user._id, role: user.role, email: user.email, phone: user.phone},
     });
   } catch (err) {
     logger.error(err.message);

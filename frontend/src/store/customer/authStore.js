@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import axios from "axios";
 
-// ✅ Axios instance with cookies enabled
+// Axios instance with cookies enabled
 const api = axios.create({
   baseURL: "http://localhost:5000/api/delivery",
   withCredentials: true, // important for HttpOnly cookies
@@ -17,7 +17,7 @@ const useAuthStore = create((set) => ({
     try {
       const response = await api.post("/auth/login", { email, password });
 
-      // ✅ Only store user info, token is in HttpOnly cookie
+      // Only store user info, token is in HttpOnly cookie
       set({ isLoggedIn: true, user: response.data.data });
       return { success: true };
     } catch (err) {
