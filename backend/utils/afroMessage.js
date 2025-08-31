@@ -16,7 +16,7 @@ const sendOTP = async (phone) => {
     };
 
     logger.info(`Status: ${response.data.response.verificationCode}`);
-
+    console.log(`Status: ${response.data.response.verificationCode}`);
     return {
       verificationCode: response.data.response.verificationCode,
       code: response.data.response.code,

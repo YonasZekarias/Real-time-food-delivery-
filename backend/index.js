@@ -11,6 +11,9 @@ const adminRoutes = require("./routes/admin.routes");
 const cartRoutes = require("./routes/cart.routes");
 const orderRoutes = require("./routes/order.routes");
 
+const driverRoutes = require("./routes/driver.routes");
+const userRoutes = require("./routes/user.routes");
+
 const cors = require("cors");
 const connectDB = require("./config/db");
 const { connectRedis } = require("./config/redis");
@@ -20,7 +23,13 @@ const cookieParser = require("cookie-parser");
 const app = express();
 
 // Middlewares
-app.use(cors({ origin: "http://localhost:3000", credentials: true }));
+
+//frontend make the frontend work on port 3000
+app.use(cors({
+  origin: process.env.CLIENT_URL || "http://localhost:3000",
+  credentials: true,
+}));
+
 
 app.use(express.json());
 app.use(cookieParser());
@@ -28,9 +37,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerFile));
 // Connect to MongoDB and Redis
-Promise.all([connectDB(),
-  connectRedis()
-]).catch((err) => {
+Promise.all([connectDB(), connectRedis()]).catch((err) => {
   logger.error(`Startup error: ${err.message}`);
   if (process.env.NODE_ENV !== "test")
     return process.exit(1); // Exit process with failure
@@ -46,6 +53,8 @@ app.use("/api/delivery/restaurants", restaurantRoutes);
 
 app.use("/api/delivery/orders", orderRoutes);
 
+app.use("/api/delivery/drivers", driverRoutes);
+app.use("/api/delivery/users", userRoutes);
 // Error handling
 app.use((err, req, res, next) => {
   logger.error(err.message);

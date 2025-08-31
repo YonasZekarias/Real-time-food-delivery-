@@ -2,12 +2,13 @@ const express = require("express");
 const {
   createOrder,
   getOrderHistory,
-<<<<<<< HEAD
-=======
-  changeOrderStatus
->>>>>>> 4710a64c6ea4b66ef80cdaf7fbcb2d4859da27b6
+  changeOrderStatus,
+  storeFeedback, // This function comes from the 'beki.b' branch
 } = require("../controllers/order.controller");
-const { validateCreateOrder } = require("../validators/orderValidator");
+const {
+  validateCreateOrder,
+  validateFeedback, // This validator comes from the 'beki.b' branch
+} = require("../validators/orderValidator");
 const protect = require("../middlewares/auth.middleware.js");
 const restrictTo = require("../middlewares/restrictTo");
 
@@ -15,35 +16,32 @@ const router = express.Router();
 
 router.post(
   "/",
-<<<<<<< HEAD
-  // protect,
-  // restrictTo("customer", "restaurant", "admin"),
-=======
-  protect,
-  restrictTo("customer", "restaurant", "admin"),
->>>>>>> 4710a64c6ea4b66ef80cdaf7fbcb2d4859da27b6
+  protect, // Keep active as per the 'main' branch's intention
+  restrictTo("customer", "restaurant", "admin"), // Keep active as per the 'main' branch's intention
   validateCreateOrder,
   createOrder
 );
+
 router.get(
   "/all",
-<<<<<<< HEAD
-  // protect,
-  // restrictTo("customer", "restaurant", "admin"),
+  protect, // Keep active as per the 'main' branch's intention
+  restrictTo("customer", "restaurant", "admin"), // Keep active as per the 'main' branch's intention
   getOrderHistory
 );
 
-module.exports = router;
-=======
-  protect,
-  restrictTo("customer", "restaurant", "admin"),
-  getOrderHistory
-);
 router.post(
   "/:orderId/status",
   protect,
   restrictTo("restaurant", "admin"),
   changeOrderStatus
 );
+
+router.post(
+  "/:id/feedback",
+  protect,
+  restrictTo("customer"),
+  validateFeedback,
+  storeFeedback
+);
+
 module.exports = router;
->>>>>>> 4710a64c6ea4b66ef80cdaf7fbcb2d4859da27b6

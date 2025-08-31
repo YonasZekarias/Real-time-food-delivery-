@@ -1,5 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+
+// Customer Pages
 import { Login } from "./pages/customer/Login";
 import Signup from "./pages/customer/Signup";
 import ForgotPassword from "./pages/customer/ForgotPassword";
@@ -12,15 +14,21 @@ import NearbyRestaurants from "./pages/customer/NearbyRestaurants";
 import Sidebar from "./components/Sidebar";
 import MenuPage from "./pages/customer/MenuPage";
 import CartPage from "./pages/customer/CartPage";
+import OrderStatus from "./pages/customer/OrderStatus";
 import OrderStatus from "./pages/OrderStatus"; // Assuming OrderStatus is also a customer-facing page and moved to the customer folder for consistency
 import CheckoutPage from "./pages/customer/CheckoutPage";
-import Navbar from "./components/Navbar"; // Included, though usage is commented out in Routes
 import OrderConfirmationPage from "./pages/customer/OrderConfirmationPage";
 
 // Restaurant specific pages
 import Dashboard from "./pages/restaurant/Dashboard";
 import MenuManagement from "./pages/restaurant/MenuManagementpage";
 import Inventory from "./pages/restaurant/InventoryPage";
+
+// Admin Pages
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import UserManagement from "./pages/admin/UserManagement";
+import RestaurantManagement from "./pages/admin/RestaurantManagement";
+import PendingRestaurants from "./pages/admin/PendingRestaurants";
 
 import AdminDashboard from "./pages/AdminDashboard";
 import UserManagement from "./pages/UserManagement"
@@ -46,20 +54,31 @@ function App() {
           <Route path="/menu/:restaurantId" element={<MenuPage />} />
           <Route path="/cart" element={<CartPage />} />
           <Route path="/checkout" element={<CheckoutPage />} />
-          <Route path="/order-confirmation" element={<OrderConfirmationPage />} />
+          <Route
+            path="/order-confirmation"
+            element={<OrderConfirmationPage />}
+          />
           <Route path="/order-status" element={<OrderStatus />} />
           <Route path="/user-management" element={<UserManagement />} />
       
 
 
           {/* Restaurant Pages */}
-          {/* <Navbar /> */} {/* If Navbar is needed for restaurant pages, uncomment and place within specific routes or a layout component */}
           <Route path="/dashboard" element={<Dashboard />} />
           <Route
             path="/MenuManagement/:restaurantId"
             element={<MenuManagement />}
           />
           <Route path="/inventory/:restaurantId" element={<Inventory />} />
+
+          {/* Admin Pages */}
+          <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/admin/users" element={<UserManagement />} />
+          <Route path="/admin/restaurants" element={<RestaurantManagement />} />
+          <Route
+            path="/admin/restaurants/pending"
+            element={<PendingRestaurants />}
+          />
         </Routes>
       </div>
     </Router>

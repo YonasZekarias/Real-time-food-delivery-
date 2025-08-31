@@ -1,14 +1,14 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import useStore from "../../store/customer/useStore";
+import useFeedbackStore from "../../store/customer/FeedbackStore";
 
 const FeedbackPage = () => {
   const navigate = useNavigate();
 
   // Zustand state
-  const feedbackText = useStore((state) => state.feedbackText);
-  const setFeedbackText = useStore((state) => state.setFeedbackText);
-  const clearFeedback = useStore((state) => state.clearFeedback);
+  const feedbackText = useFeedbackStore((state) => state.feedbackText);
+  const setFeedbackText = useFeedbackStore((state) => state.setFeedbackText);
+  const clearFeedback = useFeedbackStore((state) => state.clearFeedback);
 
   const handleSubmit = () => {
     console.log("Feedback submitted:", feedbackText);
@@ -23,11 +23,9 @@ const FeedbackPage = () => {
 
   return (
     <div className="relative bg-white min-h-screen overflow-hidden">
-      {/* Animated background orbs */}
       <div className="pointer-events-none absolute top-[-10%] right-[-10%] w-[40vw] h-[40vw] bg-[#FFD700] rounded-full blur-[150px] opacity-20" />
       <div className="pointer-events-none absolute bottom-[-10%] left-[-10%] w-[40vw] h-[40vw] bg-[#FF0000] rounded-full blur-[150px] opacity-20" />
 
-      {/* Content */}
       <div className="relative z-10 py-10 px-6">
         <div className="max-w-2xl mx-auto bg-black/5 backdrop-blur-sm border border-black/10 rounded-2xl shadow-lg p-6 sm:p-8">
           <h1 className="text-3xl sm:text-4xl font-extrabold mb-6 bg-gradient-to-r from-[#FF0000] via-[#FFD700] to-[#FF0000] bg-clip-text text-transparent">

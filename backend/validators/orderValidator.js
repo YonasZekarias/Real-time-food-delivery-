@@ -25,6 +25,21 @@ const createOrderSchema = Joi.object({
     }),
 });
 
+const feedbackSchema = Joi.object({
+  rating: Joi.number().integer().min(1).max(5).required().messages({
+
+    "number.base": "Rating must be a number",
+    "number.integer": "Rating must be an integer",
+    "number.min": "Rating must be at least 1",
+    "number.max": "Rating must not exceed 5",
+    "any.required": "Rating is required",
+  }),
+  comment: Joi.string().optional().allow(null).max(500).messages({
+    "string.base": "Comment must be a string",
+    "string.max": "Comment must not exceed 500 characters",
+  }),
+});
+
 const validate = (schema) => (req, res, next) => {
   const { error } = schema.validate(req.body, { abortEarly: false });
   if (error) {
@@ -38,4 +53,5 @@ const validate = (schema) => (req, res, next) => {
 
 module.exports = {
   validateCreateOrder: validate(createOrderSchema),
+  validateFeedback: validate(feedbackSchema),
 };

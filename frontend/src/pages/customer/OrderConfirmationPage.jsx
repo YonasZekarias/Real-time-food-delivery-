@@ -9,9 +9,9 @@ const OrderConfirmationPage = () => {
 
   const { order } = location.state || {};
 
-  const handleTrackOrder = () => {
-    // Navigate to order history for now
-    navigate("/order-history");
+  // Updated handler to navigate to OrderStatus page
+  const handleConfirmOrder = () => {
+    navigate("/order-status");
   };
 
   const handleFeedback = () => {
@@ -102,10 +102,10 @@ const OrderConfirmationPage = () => {
 
           <div className="mt-6 text-center">
             <button
-              onClick={handleTrackOrder}
+              onClick={handleConfirmOrder}
               className="w-full max-w-xs mx-auto inline-flex items-center justify-center font-semibold py-3 rounded-xl shadow-md transition-all duration-300 bg-red-600 text-white hover:bg-red-700 focus:outline-none focus:ring-4 focus:ring-red-500/40 active:scale-[0.98]"
             >
-              Track Order
+              Confirm Order
             </button>
             <p className="mt-4 text-sm">
               <span className="text-gray-600">
