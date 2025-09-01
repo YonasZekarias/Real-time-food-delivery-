@@ -124,8 +124,10 @@ exports.changeOrderStatus = async (req, res) => {
       "accepted",
       "preparing",
       "ready",
+      "picked",
+      "en_route",
       "delivered",
-      "cancelled",
+      "canceled",
     ];
     if (!validStatuses.includes(status)) {
       return res.status(400).json({ message: "Invalid status value" });

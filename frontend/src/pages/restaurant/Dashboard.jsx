@@ -2,54 +2,43 @@ import React, { useState, useEffect } from "react";
 import Sidebar from "../../components/restaurant/Sidebar";
 import OrderStatus from "../../components/OrderStatus";
 import Graphs from "../../components/Graphs";
-import { useOrderStore } from "../../store/restaurant/orderstore";
+import dummyOrders from "../../data/dummyOrders";
 
 export default function Dashboard() {
-  const {
-    orders,
-    fetchOrders,
-    updateOrderStatus,
-    deleteOrder,
-    loading,
-    error,
-  } = useOrderStore();
+  const [orders, setOrders] = useState([]);
   const [modalOrder, setModalOrder] = useState(null);
   const [activeTab, setActiveTab] = useState("status");
 
   useEffect(() => {
-    fetchOrders();
-  }, [fetchOrders]);
+    const fetched = dummyOrders.map(order => ({
+      ...order,
+      total: order.items.reduce((sum, i) => sum + i.qty * i.price, 0)
+    }));
+    setOrders(fetched);
+  }, []);
 
   const grouped = { pending: [], "in-progress": [], completed: [] };
-  const ordersWithTotal = orders.map((order) => ({
-    ...order,
-    total: order.items.reduce((sum, i) => sum + i.qty * i.price, 0),
-  }));
-  ordersWithTotal.forEach((o) => {
-    if (grouped[o.status]) {
-      grouped[o.status].push(o);
-    }
-  });
+  orders.forEach(o => grouped[o.status].push(o));
 
   const formatBirr = (x) => "Br " + (x || 0).toLocaleString();
 
-  const handleUpdateStatus = (order, newStatus) => {
-    updateOrderStatus(order.id, newStatus);
+  const updateStatus = (order, newStatus) => {
+    setOrders(prev => prev.map(o => o.id === order.id ? { ...o, status: newStatus } : o));
     setModalOrder(null);
   };
 
-  const handleDeleteOrder = (order) => {
-    deleteOrder(order.id);
+  const deleteOrder = (order) => {
+    setOrders(prev => prev.filter(o => o.id !== order.id));
     setModalOrder(null);
   };
 
   return (
     <div className="flex min-h-screen bg-gray-50">
       {/* Sidebar */}
-      <Sidebar />
+      <Sidebar active={activeTab} setActive={setActiveTab} />
 
       {/* Main */}
-      <div className="flex-1 p-6 sm:ml-24 ml-20">
+      <div className="flex-1 p-6 ml-20">
         {/* Sticky Header */}
         <div className="sticky top-0 bg-gray-50 pb-4 z-40">
           <div className="flex justify-between items-center mb-6">
@@ -85,19 +74,15 @@ export default function Dashboard() {
         </div>
 
         {/* Content */}
-        {loading && <p>Loading orders...</p>}
-        {error && <p className="text-red-500">{error}</p>}
-        {!loading && !error && activeTab === "status" && (
+        {activeTab === "status" && (
           <OrderStatus
-            orders={ordersWithTotal}
+            orders={orders}
             grouped={grouped}
             setModalOrder={setModalOrder}
             formatBirr={formatBirr}
           />
         )}
-        {!loading && !error && activeTab === "graph" && (
-          <Graphs orders={ordersWithTotal} grouped={grouped} />
-        )}
+        {activeTab === "graph" && <Graphs orders={orders} grouped={grouped} />}
 
         {/* Modal */}
         {modalOrder && (
@@ -143,9 +128,7 @@ export default function Dashboard() {
                       <td className="p-3">{i.name}</td>
                       <td className="p-3 text-center">{i.qty}</td>
                       <td className="p-3 text-right">{formatBirr(i.price)}</td>
-                      <td className="p-3 text-right">
-                        {formatBirr(i.qty * i.price)}
-                      </td>
+                      <td className="p-3 text-right">{formatBirr(i.qty * i.price)}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -154,9 +137,7 @@ export default function Dashboard() {
                     <td colSpan={3} className="p-3 text-right">
                       Total
                     </td>
-                    <td className="p-3 text-right">
-                      {formatBirr(modalOrder.total)}
-                    </td>
+                    <td className="p-3 text-right">{formatBirr(modalOrder.total)}</td>
                   </tr>
                 </tfoot>
               </table>
@@ -166,9 +147,7 @@ export default function Dashboard() {
                 {modalOrder.status === "pending" && (
                   <button
                     className="bg-gray-800 hover:bg-gray-900 text-white px-4 py-2 rounded-lg text-sm"
-                    onClick={() =>
-                      handleUpdateStatus(modalOrder, "in-progress")
-                    }
+                    onClick={() => updateStatus(modalOrder, "in-progress")}
                   >
                     Mark as Preparing
                   </button>
@@ -176,14 +155,14 @@ export default function Dashboard() {
                 {modalOrder.status === "in-progress" && (
                   <button
                     className="bg-gray-800 hover:bg-gray-900 text-white px-4 py-2 rounded-lg text-sm"
-                    onClick={() => handleUpdateStatus(modalOrder, "completed")}
+                    onClick={() => updateStatus(modalOrder, "completed")}
                   >
                     Mark as Completed
                   </button>
                 )}
                 <button
                   className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm"
-                  onClick={() => handleDeleteOrder(modalOrder)}
+                  onClick={() => deleteOrder(modalOrder)}
                 >
                   Delete Order
                 </button>
