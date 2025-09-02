@@ -18,6 +18,7 @@ const restaurantSchema = new mongoose.Schema({
     ref: "User",
     required: true,
   },
+  image: { type: String, trim: true },
   menu: [menuItemSchema],
   verified: { type: Boolean, default: false },
   deleted: { type: Boolean, default: false },

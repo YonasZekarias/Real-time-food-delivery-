@@ -1,12 +1,8 @@
 import React from "react";
 import {
-  FiHome,
-  FiMap,
-  FiShoppingBag,
-  FiTag,
-  FiSettings,
   FiShield,
   FiUsers,
+  FiShoppingBag,
   FiCheckCircle,
 } from "react-icons/fi";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -15,12 +11,20 @@ const Sidebar = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const userNavItems = [
-    { label: "Explore", icon: FiMap, path: "/nearby" },
-    { label: "Orders", icon: FiShoppingBag, path: "/order-history" },
-    { label: "Promos", icon: FiTag, path: "/promos" },
-    { label: "Setting", icon: FiSettings, path: "/settings" },
+  // Admin navigation items
+  const adminNavItems = [
     { label: "Admin Dashboard", icon: FiShield, path: "/admin" },
+    { label: "User Management", icon: FiUsers, path: "/admin/users" },
+    {
+      label: "Restaurant Management",
+      icon: FiShoppingBag,
+      path: "/admin/restaurants",
+    },
+    {
+      label: "Pending Restaurants",
+      icon: FiCheckCircle,
+      path: "/admin/restaurants/pending",
+    },
   ];
 
   return (
@@ -32,10 +36,16 @@ const Sidebar = () => {
         className="w-12 h-12 object-contain mb-4"
       />
 
-      {/* Navigation Items */}
+      {/* Admin Navigation Items */}
       <div className="flex flex-col gap-6">
-        {userNavItems.map(({ label, icon: Icon, path }) => {
-          const isActive = location.pathname === path;
+        {adminNavItems.map(({ label, icon: Icon, path }) => {
+          const isActive =
+            location.pathname === path ||
+            (path === "/admin" && location.pathname.startsWith("/admin")) ||
+            (path === "/admin/users" &&
+              location.pathname.startsWith("/admin/users")) ||
+            (path === "/admin/restaurants" &&
+              location.pathname.startsWith("/admin/restaurants"));
 
           return (
             <button

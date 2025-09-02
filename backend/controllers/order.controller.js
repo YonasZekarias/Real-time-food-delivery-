@@ -119,14 +119,27 @@ exports.changeOrderStatus = async (req, res) => {
     const { orderId } = req.params;
     const { status } = req.body;
 
-    const validStatuses = ["pending", "accepted", "preparing", "ready", "delivered", "cancelled"];
+    const validStatuses = [
+      "pending",
+      "accepted",
+      "preparing",
+      "ready",
+      "picked",
+      "en_route",
+      "delivered",
+      "canceled",
+    ];
     if (!validStatuses.includes(status)) {
       return res.status(400).json({ message: "Invalid status value" });
     }
 
-    const order = await Order.findOne({ _id: orderId, restaurantId: req.user._id });
+    const order = await Order.findOne({
+      _id: orderId,
+    });
     if (!order) {
-      return res.status(404).json({ message: "Order not found or unauthorized" });
+      return res
+        .status(404)
+        .json({ message: "Order not found or unauthorized" });
     }
 
     order.status = status;
@@ -139,4 +152,32 @@ exports.changeOrderStatus = async (req, res) => {
     logger.error(`Error changing order status: ${err.message}`);
     res.status(500).json({ message: "Server error" });
   }
-}
+};
+
+exports.storeFeedback = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { rating, comment } = req.body;
+    const order = await Order.findById(id);
+    if (!order) return res.status(404).json({ message: "Order not found" });
+
+    if (order.customerId.toString() !== req.user._id.toString()) {
+      throw new Error(
+        "Forbidden: You can only provide feedback for your own orders"
+      );
+    }
+
+    if (order.status !== "delivered") {
+      throw new Error("Feedback can only be provided for delivered orders");
+    }
+
+    order.rating = rating;
+    order.feedback = comment;
+    await order.save();
+
+    res.status(200).json({ message: "success", data: order });
+  } catch (err) {
+    logger.error(`Error storing feedback: ${err.message}`);
+    res.status(500).json({ messge: "Server error" });
+  }
+};

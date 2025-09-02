@@ -12,11 +12,12 @@ const {
   getMenuItem,
   updateInventory,
   registerRestaurant,
-  restaurantStats
+  restaurantStats,
+  inviteDriver
 } = require("../controllers/restaurant.controller");
 
 router.post("/register", registerRestaurant);
-
+router.post("/invite-driver", protect, restrictTo('restaurant'), inviteDriver);
 
 router.get("/", protect, getAllRestaurants);
 router.get("/:id", protect, getRestaurantById);

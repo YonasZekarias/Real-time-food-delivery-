@@ -2,7 +2,8 @@ const mongoose = require("mongoose");
 const Restaurant = require("../models/Restaurant");
 const logger = require("../utils/logger");
 const User = require("../models/Users");
-const {sendOTP} = require("../utils/afroMessage");
+const { client: redisClient } = require("../config/redis");
+const { sendOTP } = require("../utils/afroMessage");
 // Helper to check ownership
 const checkOwnership = (restaurant, user) => {
   if (!restaurant.ownerId.equals(user._id)) {
@@ -14,7 +15,10 @@ const checkOwnership = (restaurant, user) => {
 // Get all verified, non-deleted restaurants
 const getAllRestaurants = async (req, res) => {
   try {
-    const restaurants = await Restaurant.find({ deleted: false, verified: true });
+    const restaurants = await Restaurant.find({
+      deleted: false,
+      verified: true,
+    });
     res.status(200).json(restaurants);
   } catch (err) {
     logger.error("Failed to fetch restaurants:", err);
@@ -48,10 +52,13 @@ const addMenuItem = async (req, res) => {
     const { name, price, description, image, inStock } = req.body;
 
     const restaurant = await Restaurant.findById(req.params.restaurantId);
-    if (!restaurant) return res.status(404).json({ error: "Restaurant not found" });
+    if (!restaurant)
+      return res.status(404).json({ error: "Restaurant not found" });
 
     if (!checkOwnership(restaurant, req.user)) {
-      return res.status(403).json({ error: "Forbidden: You are not the owner" });
+      return res
+        .status(403)
+        .json({ error: "Forbidden: You are not the owner" });
     }
 
     if (!Array.isArray(restaurant.menu)) restaurant.menu = [];
@@ -62,7 +69,9 @@ const addMenuItem = async (req, res) => {
     res.status(201).json({ message: "Menu item added", menu: restaurant.menu });
   } catch (error) {
     logger.error("Error adding menu item:", error);
-    res.status(500).json({ error: "Failed to add menu item", details: error.message });
+    res
+      .status(500)
+      .json({ error: "Failed to add menu item", details: error.message });
   }
 };
 
@@ -70,10 +79,13 @@ const addMenuItem = async (req, res) => {
 const deleteMenuItem = async (req, res) => {
   try {
     const restaurant = await Restaurant.findById(req.params.restaurantId);
-    if (!restaurant) return res.status(404).json({ error: "Restaurant not found" });
+    if (!restaurant)
+      return res.status(404).json({ error: "Restaurant not found" });
 
     if (req.user.role !== "admin" && !checkOwnership(restaurant, req.user)) {
-      return res.status(403).json({ error: "Forbidden: You are not the owner" });
+      return res
+        .status(403)
+        .json({ error: "Forbidden: You are not the owner" });
     }
 
     restaurant.menu = restaurant.menu.filter(
@@ -92,14 +104,18 @@ const deleteMenuItem = async (req, res) => {
 const updateMenuItem = async (req, res) => {
   try {
     const restaurant = await Restaurant.findById(req.params.restaurantId);
-    if (!restaurant) return res.status(404).json({ error: "Restaurant not found" });
+    if (!restaurant)
+      return res.status(404).json({ error: "Restaurant not found" });
 
     if (!checkOwnership(restaurant, req.user)) {
-      return res.status(403).json({ error: "Forbidden: You are not the owner" });
+      return res
+        .status(403)
+        .json({ error: "Forbidden: You are not the owner" });
     }
 
     const menuItem = restaurant.menu.id(req.params.itemId);
-    if (!menuItem) return res.status(404).json({ error: "Menu item not found" });
+    if (!menuItem)
+      return res.status(404).json({ error: "Menu item not found" });
 
     const { name, price, description, image, inStock } = req.body;
     if (name !== undefined) menuItem.name = name;
@@ -118,16 +134,37 @@ const updateMenuItem = async (req, res) => {
 // Register restaurant (creates user + restaurant)
 const registerRestaurant = async (req, res) => {
   try {
-    const { email, phone, password, name, location } = req.body;
+    const { email, phone, password, name, location, image } = req.body;
 
     const userExist = await User.findOne({ email });
-    if (userExist) return res.status(400).json({ message: "Restaurant already exists" });
+    if (userExist)
+      return res.status(400).json({ message: "Restaurant already exists" });
 
-    const user = await User.create({ email, phone, password, role: "restaurant" });
+    const user = await User.create({
+      email,
+      phone,
+      password,
+      role: "restaurant",
+    });
     logger.info("Restaurant user created:", user._id);
 
-    const restaurant = await Restaurant.create({ name, location, ownerId: user._id });
-    sendOTP(phone);
+    const restaurant = await Restaurant.create({
+      name,
+      location,
+      ownerId: user._id,
+      image,
+    });
+    const { verificationCode, code } = await sendOTP(phone);
+    try {
+      const result = await redisClient.setEx(
+        `otp:${phone}`,
+        300,
+        JSON.stringify({ code, verificationCode })
+      );
+      logger.info(`Redis set results: ${result}`);
+    } catch (err) {
+      logger.error(`Redis set error: ${err.message}`);
+    }
 
     res.status(201).json({ status: "success", data: { restaurant } });
   } catch (err) {
@@ -139,7 +176,8 @@ const registerRestaurant = async (req, res) => {
 const getMenus = async (req, res) => {
   try {
     const restaurant = await Restaurant.findById(req.params.restaurantId);
-    if (!restaurant) return res.status(404).json({ error: "Restaurant not found" });
+    if (!restaurant)
+      return res.status(404).json({ error: "Restaurant not found" });
 
     res.status(200).json(restaurant.menu);
   } catch (err) {
@@ -154,32 +192,36 @@ const getMenuItem = async (req, res) => {
       return res.status(404).json({ error: "Restaurant not found" });
     }
 
-    const menuItem = restaurant.menu.id(req.params.itemId); 
+    const menuItem = restaurant.menu.id(req.params.itemId);
     if (!menuItem) {
       return res.status(404).json({ error: "Menu item not found" });
     }
 
     res.status(200).json(menuItem);
   } catch (err) {
-    logger.error("Failed to fetch menu item:", err); 
+    logger.error("Failed to fetch menu item:", err);
     res.status(500).json({ error: "Failed to fetch menu item" });
   }
 };
 const updateInventory = async (req, res) => {
   try {
     const restaurant = await Restaurant.findById(req.params.restaurantId);
-    if (!restaurant) return res.status(404).json({ error: "Restaurant not found" });
+    if (!restaurant)
+      return res.status(404).json({ error: "Restaurant not found" });
 
     if (!checkOwnership(restaurant, req.user)) {
-      return res.status(403).json({ error: "Forbidden: You are not the owner" });
+      return res
+        .status(403)
+        .json({ error: "Forbidden: You are not the owner" });
     }
 
     const { menuItemId, quantity } = req.body;
     const menuItem = restaurant.menu.id(menuItemId);
-    if (!menuItem) return res.status(404).json({ error: "Menu item not found" });
+    if (!menuItem)
+      return res.status(404).json({ error: "Menu item not found" });
 
     menuItem.inStock = quantity > 0;
-    menuItem.quantity = quantity; 
+    menuItem.quantity = quantity;
 
     await restaurant.save();
     res.json({ success: true, updatedItem: menuItem });
@@ -207,6 +249,62 @@ const restaurantStats = async (req, res) => {
     res.status(500).json({ error: "Failed to fetch restaurant stats" });
   }
 };
+const inviteDriver = async (req, res) => {
+  try {
+    const { phone } = req.body;
+
+    // restaurant making the request (owner from JWT payload)
+    const restaurantOwnerId = req.user._id;
+
+    // find the restaurant for this owner
+    const restaurant = await Restaurant.findOne({ ownerId: restaurantOwnerId });
+    if (!restaurant) {
+      return res
+        .status(403)
+        .json({ message: "Not authorized: Restaurant not found" });
+    }
+
+    // find the user by phone
+    const user = await User.findOne({ phone });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // if already driver for this restaurant
+    if (
+      user.role === "driver" &&
+      user.restaurantId?.toString() !== restaurant._id.toString()
+    ) {
+      return res
+        .status(400)
+        .json({ message: "User is already a driver for another restaurant" });
+    }
+    if (
+      user.role === "driver" &&
+      user.restaurantId?.toString() === restaurant._id.toString()
+    ) {
+      return res
+        .status(400)
+        .json({ message: "User is already a driver for this restaurant" });
+    }
+
+    user.role = "driver";
+    user.restaurantId = restaurant._id;
+    await user.save();
+
+    res.status(200).json({
+      message: "Driver invited successfully",
+      driver: {
+        id: user._id,
+        phone: user.phone,
+        restaurantId: restaurant._id,
+      },
+    });
+  } catch (error) {
+    logger.error("Error inviting driver:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
 
 module.exports = {
   getAllRestaurants,
@@ -219,4 +317,5 @@ module.exports = {
   updateMenuItem,
   updateInventory,
   registerRestaurant,
+  inviteDriver,
 };

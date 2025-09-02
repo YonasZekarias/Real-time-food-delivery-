@@ -1,11 +1,13 @@
+// src/components/ResetPassword.jsx
 import { useState, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { resetPassword } from "../../api/customer/auth";
 
 const ResetPassword = () => {
   const { phone } = useLocation().state || {};
   const navigate = useNavigate();
 
-  const [otp, setOtp] = useState(["", "", "", "", "", ""]);
+  const [otp, setOtp] = useState(Array(6).fill(""));
   const [newPassword, setNewPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [message, setMessage] = useState("");
@@ -13,15 +15,12 @@ const ResetPassword = () => {
   const [loading, setLoading] = useState(false);
   const inputsRef = useRef([]);
 
-  if (!phone) {
-    navigate("/forgot-password");
-  }
+  if (!phone) navigate("/forgot-password");
 
   const handleOTPInput = (value, index) => {
     if (!/^\d*$/.test(value)) return;
 
     const newOtp = [...otp];
-
     if (value.length === 6 && index === 0) {
       const digits = value.split("").slice(0, 6);
       digits.forEach((digit, i) => {
@@ -35,7 +34,6 @@ const ResetPassword = () => {
 
     newOtp[index] = value;
     setOtp(newOtp);
-
     if (value && index < 5) inputsRef.current[index + 1]?.focus();
     if (!value && index > 0) inputsRef.current[index - 1]?.focus();
   };
@@ -64,29 +62,12 @@ const ResetPassword = () => {
       return;
     }
 
-    const otpCode = otp.join("");
-
     try {
-      const res = await fetch(
-        "http://localhost:5000/api/delivery/auth/reset-password",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          credentials: "include", // ✅ Important for HttpOnly cookies
-          body: JSON.stringify({ phone, code: otpCode, newPassword }),
-        }
-      );
-
-      const data = await res.json();
-
-      if (res.ok && data.status === "success") {
-        setMessage("✅ Password reset successful! Redirecting to login...");
-        setTimeout(() => navigate("/login"), 2000);
-      } else {
-        setError(data.message || "Failed to reset password.");
-      }
+      await resetPassword({ phone, code: otp.join(""), newPassword });
+      setMessage("✅ Password reset successful! Redirecting to login...");
+      setTimeout(() => navigate("/login"), 2000);
     } catch (err) {
-      setError("Network error. Please try again.");
+      setError(err.message);
     } finally {
       setLoading(false);
     }
@@ -96,14 +77,12 @@ const ResetPassword = () => {
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
       <div className="bg-white p-8 rounded-3xl shadow-md w-full max-w-xl text-center">
         <div className="text-4xl text-green-600 mb-4">📩</div>
-
         <h2 className="text-2xl font-bold text-gray-800 mb-2">Verification Code</h2>
         <p className="text-gray-500 mb-6">
           Enter the 6-digit code sent to <strong>{phone}</strong> and create a new password.
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* OTP Boxes */}
           <div className="flex justify-center gap-2">
             {otp.map((digit, idx) => (
               <input
@@ -125,13 +104,12 @@ const ResetPassword = () => {
             ))}
           </div>
 
-          {/* Resend Code Button */}
           <div>
             <button
               type="button"
               className="text-sm text-blue-500 hover:underline"
               onClick={() => {
-                setOtp(["", "", "", "", "", ""]);
+                setOtp(Array(6).fill(""));
                 inputsRef.current[0]?.focus();
               }}
             >
@@ -139,7 +117,6 @@ const ResetPassword = () => {
             </button>
           </div>
 
-          {/* New Password Input */}
           <div className="relative">
             <input
               type={showPassword ? "text" : "password"}
@@ -158,7 +135,6 @@ const ResetPassword = () => {
             </button>
           </div>
 
-          {/* Confirm Button */}
           <button
             type="submit"
             disabled={loading}
@@ -167,7 +143,6 @@ const ResetPassword = () => {
             {loading ? "Resetting..." : "Confirm Code & Reset"}
           </button>
 
-          {/* Messages */}
           {message && <p className="text-green-600 text-sm">{message}</p>}
           {error && <p className="text-red-600 text-sm">{error}</p>}
         </form>
