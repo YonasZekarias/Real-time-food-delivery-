@@ -17,7 +17,7 @@ const UserManagement = () => {
           credentials: "include",
         });
         const data = await response.json();
-        setUsers(data?.data?.users || []);
+        setUsers(data?.users || []);
         setLoading(false);
       } catch (err) {
         setError("Failed to fetch users");
