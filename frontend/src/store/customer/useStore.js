@@ -1,6 +1,26 @@
 import { create } from "zustand";
+import { fetchUsers } from "../../api/customer/user";
 
 const useStore = create((set, get) => ({
+  fetchUsers: async (role) => {
+      set({ loading: true, error: null });
+  
+      try {
+        const data = await fetchUsers(role);
+  
+        const uniqueTypes = [
+          ...new Set(data.map((r) => r.type).filter(Boolean)),
+        ].sort();
+  
+        set({
+          users: data,
+          filters: ["All", ...uniqueTypes],
+          loading: false,
+        });
+      } catch (err) {
+        set({ error: err.message, loading: false });
+      }
+    },
   cartItems: [],
   addToCart: (item) => {
     const cart = get().cartItems;

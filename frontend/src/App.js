@@ -14,7 +14,7 @@ import ForgotPassword from "./pages/customer/ForgotPassword";
 import ResetPassword from "./pages/customer/ResetPassword";
 import { Landing_Page } from "./pages/customer/Landing Page";
 import VerificationCode from "./components/VerificationCode";
-import OrderHistory from "./pages/customer/OrderHistory";
+import OrderHistory from "./pages/OrderHistory";
 import FeedbackPage from "./pages/customer/FeedBack";
 import NearbyRestaurants from "./pages/customer/NearbyRestaurants";
 import Sidebar from "./components/Sidebar";
@@ -35,7 +35,7 @@ import InventoryPage from "./pages/restaurant/InventoryPage";
 
 // Admin Pages
 import AdminDashboard from "./pages/admin/AdminDashboard";
-import UserManagement from "./pages/admin/UserManagement";
+import UserManagement from "./pages/UserManagement";
 import RestaurantManagement from "./pages/admin/RestaurantManagement";
 import PendingRestaurants from "./pages/admin/PendingRestaurants";
 

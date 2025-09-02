@@ -41,6 +41,7 @@ const useAuthStore = create((set) => ({
   checkAuth: async () => {
     try {
       const res = await api.get("/auth/refresh-token");
+      console.log("response " , res.data.data)
       set({ isLoggedIn: true, user: res.data.data });
     } catch {
       set({ isLoggedIn: false, user: null });
