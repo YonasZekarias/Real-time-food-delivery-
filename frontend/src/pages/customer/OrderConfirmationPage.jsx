@@ -44,7 +44,7 @@ const OrderConfirmationPage = () => {
       <div className="relative z-10 max-w-2xl mx-auto">
         <div className="group bg-white/60 backdrop-blur-sm border border-gray-200/80 rounded-2xl shadow-lg p-4 sm:p-6 md:p-8 hover:bg-yellow-100/60 transition-all duration-300">
           <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold mb-2 text-red-600">
-            Order Confirmed! 🎉
+            Confirm your Order
           </h1>
           <p className="text-gray-600 mb-6 text-sm sm:text-base">
             Your delicious order is on its way!

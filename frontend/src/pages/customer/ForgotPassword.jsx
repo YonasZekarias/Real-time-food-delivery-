@@ -1,5 +1,7 @@
+// src/components/ForgotPassword.jsx
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { sendForgotPasswordOTP } from "../../api/customer/auth";
 
 const ForgotPassword = () => {
   const navigate = useNavigate();
@@ -16,28 +18,11 @@ const ForgotPassword = () => {
     setLoading(true);
 
     try {
-      const res = await fetch(
-        "http://localhost:5000/api/delivery/auth/forgot-password",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, phone }),
-          credentials: "include", // ✅ important for cookies
-        }
-      );
-
-      const data = await res.json();
-
-      if (res.ok && data.status === "success") {
-        setMessage("✅ OTP sent to your phone.");
-        setTimeout(() => {
-          navigate("/reset-password", { state: { phone } });
-        }, 1000);
-      } else {
-        setError(data.message || "Failed to send OTP.");
-      }
+      await sendForgotPasswordOTP({ email, phone });
+      setMessage("✅ OTP sent to your phone.");
+      setTimeout(() => navigate("/reset-password", { state: { phone } }), 1000);
     } catch (err) {
-      setError("Network error. Please try again.");
+      setError(err.message);
     } finally {
       setLoading(false);
     }
@@ -47,17 +32,12 @@ const ForgotPassword = () => {
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
       <div className="bg-white p-8 rounded-3xl shadow-md w-full max-w-md text-center">
         <div className="text-4xl text-red-600 mb-4">📱</div>
-
         <h2 className="text-2xl font-bold text-gray-800 mb-2">Forgot Password</h2>
-        <p className="text-gray-500 mb-6">
-          Enter your email and phone number to receive an OTP.
-        </p>
+        <p className="text-gray-500 mb-6">Enter your email and phone number to receive an OTP.</p>
 
         <form onSubmit={handleSendOTP} className="space-y-5 text-left">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Email
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
             <input
               type="email"
               placeholder="example@email.com"
@@ -69,9 +49,7 @@ const ForgotPassword = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Phone
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
             <input
               type="tel"
               placeholder="+2519XXXXXXX"

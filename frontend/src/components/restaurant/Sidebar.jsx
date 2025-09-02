@@ -1,5 +1,13 @@
 import React from "react";
-import { FiHome, FiBookOpen, FiShoppingCart, FiActivity, FiSettings, FiLogOut } from "react-icons/fi";
+import {
+  FiHome,
+  FiBookOpen,
+  FiShoppingCart,
+  FiActivity,
+  FiSettings,
+  FiLogOut,
+  FiBox,
+} from "react-icons/fi"; // Added FiBox for Inventory icon
 import { useLocation, useNavigate } from "react-router-dom";
 import useAuthStore from "../../store/restaurant/authStore";
 
@@ -7,10 +15,12 @@ const Sidebar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { logout } = useAuthStore(); // ✅ inside component
+  const restaurantId = useAuthStore((state) => state.restaurantId); // Assuming restaurantId is in authStore
 
   const navItems = [
     { label: "Dashboard", icon: FiHome, path: "/restaurant/dashboard" },
     { label: "Menu", icon: FiBookOpen, path: "/restaurant/menu" },
+    { label: "Inventory", icon: FiBox, path: `/inventory/${restaurantId}` },
     { label: "Orders", icon: FiShoppingCart, path: "/restaurant/orders" },
     { label: "Status", icon: FiActivity, path: "/restaurant/status" },
     { label: "Settings", icon: FiSettings, path: "/restaurant/settings" },
@@ -31,7 +41,9 @@ const Sidebar = () => {
             <button
               key={label}
               onClick={() => navigate(path)}
-              className={`flex flex-col items-center text-xs ${isActive ? "text-red-500 font-semibold" : "text-gray-600"} hover:text-red-500 transition`}
+              className={`flex flex-col items-center text-xs ${
+                isActive ? "text-red-500 font-semibold" : "text-gray-600"
+              } hover:text-red-500 transition`}
             >
               <Icon size={20} />
               <span className="mt-1">{label}</span>

@@ -34,7 +34,7 @@ router.get(
 router.post(
   "/:orderId/status",
   protect,
-  restrictTo("restaurant", "admin"),
+  restrictTo("restaurant", "admin", "driver"),
   changeOrderStatus
 );
 

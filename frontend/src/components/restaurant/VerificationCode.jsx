@@ -1,15 +1,17 @@
+// src/components/PhoneAndOtpVerification.jsx
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import useAuthStore from "../../store/restaurant/authStore";
+import { verifyOTP } from "../../api/restaurant/auth";
 
 const PhoneAndOtpVerification = () => {
   const navigate = useNavigate();
   const inputsRef = useRef([]);
   const { pendingUser, setPendingUser } = useAuthStore();
 
-  const [step, setStep] = useState(pendingUser?.phone ? "otp" : "phone"); // 'phone' or 'otp'
+  const [step, setStep] = useState(pendingUser?.phone ? "otp" : "phone");
   const [phoneInput, setPhoneInput] = useState(pendingUser?.phone || "");
-  const [code, setCode] = useState(["", "", "", "", "", ""]);
+  const [code, setCode] = useState(Array(6).fill(""));
   const [status, setStatus] = useState("idle");
   const [message, setMessage] = useState("");
 
@@ -34,14 +36,12 @@ const PhoneAndOtpVerification = () => {
     if (e.key === "Backspace") {
       e.preventDefault();
       const newCode = [...code];
-      if (code[idx]) {
-        newCode[idx] = "";
-        setCode(newCode);
-      } else if (idx > 0) {
+      if (code[idx]) newCode[idx] = "";
+      else if (idx > 0) {
         inputsRef.current[idx - 1]?.focus();
         newCode[idx - 1] = "";
-        setCode(newCode);
       }
+      setCode(newCode);
     }
   };
 
@@ -56,13 +56,13 @@ const PhoneAndOtpVerification = () => {
       return;
     }
 
-    setPendingUser({ phone: phoneInput }); // save phone to store
+    setPendingUser({ phone: phoneInput });
     setStep("otp");
-    setCode(["", "", "", "", "", ""]);
+    setCode(Array(6).fill(""));
     setMessage("");
     setStatus("idle");
 
-    setTimeout(() => inputsRef.current[0]?.focus(), 100); // focus first OTP input
+    setTimeout(() => inputsRef.current[0]?.focus(), 100);
   };
 
   // ----- Step 2: verify OTP -----
@@ -70,9 +70,7 @@ const PhoneAndOtpVerification = () => {
     e.preventDefault();
     if (!allFilled) return;
 
-    const otp = code.join("");
-    const phone = pendingUser?.phone;
-    if (!phone) {
+    if (!pendingUser?.phone) {
       setMessage("Phone number missing");
       setStatus("error");
       return;
@@ -81,28 +79,13 @@ const PhoneAndOtpVerification = () => {
     try {
       setStatus("loading");
       setMessage("");
-      const res = await fetch(
-        "http://localhost:5000/api/delivery/auth/verify-otp",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ phone, otp }),
-        }
-      );
-      const data = await res.json();
-
-      if (res.ok) {
-        setStatus("success");
-        setMessage("Verification successful! Redirecting...");
-        setTimeout(() => navigate("/restaurant/menu"), 1500);
-      } else {
-        setStatus("error");
-        setMessage(data.message || "Invalid OTP. Please try again.");
-      }
+      await verifyOTP({ phone: pendingUser.phone, otp: code.join("") });
+      setStatus("success");
+      setMessage("Verification successful! Redirecting...");
+      setTimeout(() => navigate("/restaurant/menu"), 1500);
     } catch (err) {
-      console.error(err);
       setStatus("error");
-      setMessage("Network error. Please try again.");
+      setMessage(err.message);
     }
   };
 

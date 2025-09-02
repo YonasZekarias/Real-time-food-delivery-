@@ -135,7 +135,6 @@ exports.changeOrderStatus = async (req, res) => {
 
     const order = await Order.findOne({
       _id: orderId,
-      restaurantId: req.user._id,
     });
     if (!order) {
       return res

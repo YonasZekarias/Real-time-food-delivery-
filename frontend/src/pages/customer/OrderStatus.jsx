@@ -12,9 +12,8 @@ const OrderStatus = () => {
     if (currentState === "Delivered") {
       setShowModal(true);
     } else {
-      // For pending orders, simply remain on OrderStatus.
-      // Optionally, you can show a notification or toast.
-      alert("Your order is still pending.");
+      // Navigate to the NearbyRestaurants page
+      navigate("/nearby");
     }
   };
 

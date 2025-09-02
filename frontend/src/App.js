@@ -1,5 +1,10 @@
 import React, { useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import useAuthStore from "./store/restaurant/authStore";
 
 // Customer Pages
@@ -26,7 +31,7 @@ import RestaurantLogin from "./pages/restaurant/Login";
 import Dashboard from "./pages/restaurant/Dashboard";
 import AddMenuItem from "./pages/restaurant/MenuManager";
 import MenuManagement from "./pages/restaurant/MenuManagementpage";
-import Inventory from "./pages/restaurant/InventoryPage";
+import InventoryPage from "./pages/restaurant/InventoryPage";
 
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import UserManagement from "./pages/UserManagement"
@@ -43,14 +48,16 @@ function App() {
   const PrivateRoute = ({ children, allowedRoles }) => {
     const { isLoggedIn, role, loading } = useAuthStore();
 
-    if (loading) return (
-      <div className="flex justify-center items-center h-screen">
-        <p>Loading...</p>
-      </div>
-    );
+    if (loading)
+      return (
+        <div className="flex justify-center items-center h-screen">
+          <p>Loading...</p>
+        </div>
+      );
 
     if (!isLoggedIn) return <Navigate to="/restaurant/login" replace />;
-    if (allowedRoles && !allowedRoles.includes(role)) return <Navigate to="/" replace />;
+    if (allowedRoles && !allowedRoles.includes(role))
+      return <Navigate to="/" replace />;
 
     return children;
   };
@@ -75,7 +82,10 @@ function App() {
           <Route path="/menu/:restaurantId" element={<MenuPage />} />
           <Route path="/cart" element={<CartPage />} />
           <Route path="/checkout" element={<CheckoutPage />} />
-          <Route path="/order-confirmation" element={<OrderConfirmationPage />} />
+          <Route
+            path="/order-confirmation"
+            element={<OrderConfirmationPage />}
+          />
           <Route path="/order-status" element={<OrderStatus />} />
           <Route path="/user-management" element={<UserManagement />} />
       
@@ -84,7 +94,10 @@ function App() {
           {/* Restaurant Pages */}
           <Route path="/restaurant/login" element={<RestaurantLogin />} />
           <Route path="/restaurant/signup" element={<RestaurantSignup />} />
-          <Route path="/restaurant/verify" element={<RestaurantVerificationCode />} />
+          <Route
+            path="/restaurant/verify"
+            element={<RestaurantVerificationCode />}
+          />
 
           <Route
             path="/restaurant/dashboard"
@@ -114,7 +127,7 @@ function App() {
             path="/inventory/:restaurantId"
             element={
               <PrivateRoute allowedRoles={["restaurant"]}>
-                <Inventory />
+                <InventoryPage />
               </PrivateRoute>
             }
           />

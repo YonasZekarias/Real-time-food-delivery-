@@ -1,54 +1,56 @@
 import { create } from "zustand";
+import api from "../../api/restaurant/api";
 
 export const useInventoryStore = create((set) => ({
   inventory: [],
   loading: false,
   error: null,
 
-  // Fetch inventory
-  fetchInventory: async () => {
+  fetchInventory: async (restaurantId) => {
     set({ loading: true, error: null });
     try {
-      const res = await fetch("/api/inventory");
-      const data = await res.json();
-      set({ inventory: data, loading: false });
-    } catch (err) {
-      console.error(err);
+      const response = await api.get(`/${restaurantId}/menu`);
+      const inventory = response.data.map((item) => ({
+        id: item._id,
+        name: item.name,
+        stock: item.quantity || 0,
+        available: item.inStock,
+      }));
+      set({ inventory, loading: false });
+    } catch (error) {
       set({ error: "Failed to fetch inventory", loading: false });
     }
   },
 
-  // Update stock quantity
-  updateStock: async (id, stock) => {
+  updateStock: async (restaurantId, menuItemId, quantity) => {
+    set({ loading: true, error: null });
     try {
-      const res = await fetch(`/api/inventory/${id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ stock }),
+      const response = await api.put(`/${restaurantId}/inventory`, {
+        menuItemId,
+        quantity,
       });
-      const updatedItem = await res.json();
+
+      const updatedItem = response.data.updatedItem;
+
       set((state) => ({
-        inventory: state.inventory.map((i) => (i.id === id ? updatedItem : i)),
+        inventory: state.inventory.map((item) =>
+          item.id === menuItemId
+            ? {
+                ...item,
+                stock: updatedItem.quantity,
+                available: updatedItem.inStock,
+              }
+            : item
+        ),
+        loading: false,
       }));
-    } catch (err) {
-      console.error(err);
+    } catch (error) {
+      set({ error: "Failed to update stock", loading: false });
     }
   },
 
-  // Mark item unavailable
-  markUnavailable: async (id) => {
-    try {
-      const res = await fetch(`/api/inventory/${id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ available: false }),
-      });
-      const updatedItem = await res.json();
-      set((state) => ({
-        inventory: state.inventory.map((i) => (i.id === id ? updatedItem : i)),
-      }));
-    } catch (err) {
-      console.error(err);
-    }
+  markUnavailable: async (restaurantId, menuItemId) => {
+    const { updateStock } = useInventoryStore.getState();
+    await updateStock(restaurantId, menuItemId, 0);
   },
 }));
