@@ -36,6 +36,9 @@ import InventoryPage from "./pages/restaurant/InventoryPage";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import UserManagement from "./pages/UserManagement"
 
+import RestaurantManagement from "./pages/admin/RestaurantManagement";
+import PendingRestaurants from "./pages/admin/PendingRestaurants";
+
 function App() {
   const { checkAuth } = useAuthStore();
 
