@@ -27,15 +27,25 @@ const useAuthStore = create((set) => ({
   },
 
   // ------------------- CHECK SESSION -------------------
-  checkAuth: async () => {
-    const res = await refreshTokenApi();
-    if (res.success) {
-      set({ isLoggedIn: true, user: res.data });
-    } else {
-      set({ isLoggedIn: false, user: null });
-    }
-    return res;
-  },
+    checkAuth: async () => {
+      set({ loading: true });
+      const res = await refreshTokenApi();
+      if (res.success) {
+        const data = res.data;
+        set({
+          isLoggedIn: true,
+          user: data,
+          
+        });
+      } else {
+        set({
+          isLoggedIn: false,
+          user: null,
+          
+        });
+      }
+      return res;
+    },
 
   // ------------------- SIGNUP -------------------
   signupUser: async (email, phone, password, role) => {

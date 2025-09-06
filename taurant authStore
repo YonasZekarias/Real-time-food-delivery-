@@ -1,0 +1,144 @@
+[33m54e0241[m[33m ([m[1;36mHEAD -> [m[1;32mrestaurant-side[m[33m, [m[1;31morigin/restaurant-side[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m)[m Merge pull request #55 from YonasZekarias/restaurant-side
+[33mac96ba6[m cart and refresh token stores are added
+[33m673c03b[m Merge pull request #52 from YonasZekarias/restaurant
+[33mc9f5b6e[m[33m ([m[1;31morigin/restaurant[m[33m)[m edited the edit status endpoint
+[33m3cf3dac[m Merge pull request #50 from YonasZekarias/restaurant-only
+[33m8ddefd8[m Merge pull request #51 from YonasZekarias/restaurant-side
+[33m8094de2[m api part is added
+[33m55931c8[m[33m ([m[1;31morigin/restaurant-only[m[33m)[m inventory page and state
+[33m833d2f3[m Merge pull request #49 from YonasZekarias/restaurant-side
+[33md2b9819[m restaurant side is added
+[33mcb0cd97[m Merge pull request #48 from YonasZekarias/frontend
+[33m91b0ac5[m[33m ([m[1;31morigin/frontend[m[33m)[m login and refresh-token
+[33m279cb71[m Merge pull request #47 from YonasZekarias/restaurant
+[33m8ca0338[m edited order status options
+[33m361f9ae[m Merge pull request #45 from YonasZekarias/restaurant
+[33m9444953[m edited the admin controller and also added user info endpoint
+[33md826b5e[m Merge pull request #44 from YonasZekarias/main
+[33m78cb459[m Merge pull request #43 from YonasZekarias/restaurant
+[33m80be348[m changed cors setting
+[33mf47ee3d[m Merge pull request #42 from YonasZekarias/restaurant
+[33mc80c220[m edited restaurant and  otp settings
+[33m2b03309[m Merge pull request #41 from YonasZekarias/restaurant
+[33mef94eb8[m Delete backend/.env
+[33madb939a[m Merge pull request #40 from YonasZekarias/restaurant
+[33meec79ed[m Merge branch 'main' into restaurant
+[33m8f08ebf[m edited restaurant otp settings
+[33m9aa95ef[m WIP: my local changes
+[33m42d2b89[m formated codes
+[33m0befc79[m Merge pull request #39 from YonasZekarias/deploy1
+[33m47f3101[m[33m ([m[1;31morigin/deploy1[m[33m)[m Merge branch 'main' into deploy1
+[33mc575e79[m formated codes
+[33m46147a3[m Update orderValidator.js
+[33mfe782a9[m Update order.controller.js
+[33m08b9d00[m fixed previous commit problems
+[33mcc26843[m Merge pull request #38 from YonasZekarias/restaurant
+[33m4023044[m Merge branch 'main' into restaurant
+[33m711c505[m added driverf functionalitis
+[33mc2faa19[m added driverf functionalitis
+[33m58a7b34[m Merge pull request #37 from YonasZekarias/beki.b
+[33mc57701f[m[33m ([m[1;31morigin/beki.b[m[33m)[m Merge branch 'main' into beki.b
+[33m7e59715[m Merge pull request #31 from YonasZekarias/admin-dashboard
+[33m0877c38[m Merge branch 'main' into admin-dashboard
+[33m5d7c04b[m Merge pull request #19 from YonasZekarias/feature/order-status-page
+[33m367007b[m[33m ([m[1;31morigin/feature/order-status-page[m[33m)[m Merge branch 'main' into feature/order-status-page
+[33m52ab7b8[m Merge pull request #36 from YonasZekarias/checkout
+[33m0a7ba1c[m Add user feedback functionality and admin routes for user suspension and complaints
+[33m475f39f[m Merge branch 'main' of https://github.com/YonasZekarias/Real-time-food-delivery- into admin-dashboard Resolved merge conflicts and updated order controller
+[33m4edf8b1[m[33m ([m[1;31morigin/checkout[m[33m)[m feat: integrate Leaflet for location selection in CheckoutPage
+[33m4710a64[m Merge pull request #35 from YonasZekarias/checkout
+[33me5b7ee2[m Refactor cart and restaurant management logic; update UI components for better user experience
+[33m1ec0508[m Merge pull request #34 from YonasZekarias/restaurant
+[33m9601880[m edited sendOtp part
+[33mb524d0c[m edited the swagger-output.json
+[33m7f1baf6[m Merge pull request #33 from YonasZekarias/restaurant
+[33m58a5ffd[m Merge branch 'main' into restaurant
+[33ma9090d3[m added orderStatus endpoint
+[33m5c4cc72[m Merge pull request #32 from YonasZekarias/beki.b
+[33mfee25f0[m refactor: update order history query to include additional fields and remove redundant condition
+[33m0c90699[m Merge pull request #30 from YonasZekarias/restaurant-dasboard
+[33m83f057b[m create admin dashboard and modify orderhistory
+[33m1bff556[m create admin dashboard and modify orderhistory
+[33ma04edc3[m[33m ([m[1;31morigin/restaurant-dasboard[m[33m)[m code refactor
+[33mf33b312[m error fix
+[33m32e0288[m Merge pull request #29 from YonasZekarias/restaurant-dasboard
+[33mb8ab849[m file rearrrange
+[33m7314f35[m Merge pull request #28 from YonasZekarias/restaurant-dasboard
+[33ma3f5d31[m Merge branch 'main' into restaurant-dasboard
+[33m79834c3[m restaurant ui and managemnt
+[33mc309e96[m Merge pull request #27 from YonasZekarias/Restaurant-dashboard
+[33m49aecdb[m[33m ([m[1;31morigin/Restaurant-dashboard[m[33m)[m Restaurant order managment is done
+[33m62cf255[m Merge pull request #26 from YonasZekarias/token-exchange
+[33mb0e6c5b[m[33m ([m[1;31morigin/token-exchange[m[33m)[m the token exchange is done
+[33mf01978b[m Update index.js
+[33mb906eec[m Create swagger-output.json
+[33macd2f49[m Update index.js
+[33m8066b9a[m last edit before this week commit 2
+[33m4bc0533[m last edit before this week commit 2
+[33m6b29541[m Merge pull request #25 from YonasZekarias/restaurant
+[33mf4e27f0[m last edit before this week commit
+[33m7b72bb8[m Merge pull request #24 from YonasZekarias/beki.b
+[33m384a662[m Merge branch 'main' into beki.b
+[33m9797697[m chore: remove Swagger API documentation file
+[33m3b0833c[m Merge pull request #23 from YonasZekarias/restaurant
+[33m7f70a4f[m edited the confilcts
+[33mcf7d62a[m feat: add endpoints for retrieving all restaurants and platform statistics;
+[33m1c58249[m Merge pull request #22 from YonasZekarias/restaurant
+[33mad12b79[m edited the confilcts
+[33m53bf533[m Merge pull request #21 from YonasZekarias/beki.b
+[33mc552203[m Merge branch 'main' of github.com:YonasZekarias/Real-time-food-delivery- into beki.b
+[33mc775a2e[m feat: allow admin users to access order history
+[33m3d3546c[m refactor: consolidate admin routes and controllers; add order history retrieval
+[33m287630e[m Revert "feat: add Swagger for API documentation and update order routes"
+[33m2925241[m add Swagger API documentation for Real-Time Food Delivery
+[33me2a6fee[m feat: add Swagger for API documentation and update order routes
+[33m2f58b86[m Merge pull request #20 from YonasZekarias/restaurant
+[33ma86e96e[m added an endpoint for viewing a specific order related to a restaurant and also added swagger for api documentation
+[33m938658e[m Add order status page
+[33mc143ffb[m Merge pull request #18 from YonasZekarias/restaurant
+[33m131cf55[m added an endpoint for viewing a specific menu itme using menu id
+[33mef83266[m added an endpoint for viewing a specific menu itme using menu id
+[33m78eb99b[m Merge pull request #13 from YonasZekarias/test1
+[33m2102ff0[m Merge pull request #17 from YonasZekarias/restaurant
+[33m4894594[m Merge branch 'main' into restaurant
+[33m9892d9a[m Merge pull request #16 from YonasZekarias/beki.b
+[33m8476231[m edited already existing files and also added some modifications
+[33ma30b812[m[33m ([m[1;31morigin/test1[m[33m)[m Update .env
+[33mfe97ca6[m store updated for order checkout
+[33mf7b2ae0[m ui update
+[33m7f92364[m feat: implement admin routes for managing restaurant verification and user roles feat: add delete cart functionality and update cart item handling fix: correct parameter names in restaurant routes and cart controller chore: update seed script to include user creation and validation chore: add joi-objectid dependency for better object ID validation
+[33m142184b[m Merge pull request #15 from YonasZekarias/restaurant-menu
+[33mbe3911e[m[33m ([m[1;31morigin/restaurant-menu[m[33m)[m feat(restaurants): add routes for menu CRUD, registration, pending, and verification all done
+[33m68ec4ed[m feat(restaurants): add routes for menu CRUD, registration, pending, and verification all done
+[33m4ae0672[m Merge pull request #14 from YonasZekarias/beki.b
+[33m48e1b06[m feat(restaurants): add routes for menu CRUD, registration, pending, and verification all done
+[33mefbecf4[m Remove ignored files from tracking
+[33md3fb61b[m Implement cart and order management features with validation and caching
+[33m9bba2f5[m checkout and orderconfirmation
+[33md159c4b[m add functinaly to the ui made
+[33me106627[m Merge pull request #12 from YonasZekarias/new-feature
+[33m5a02c0f[m[33m ([m[1;31morigin/new-feature[m[33m)[m nearby restaurant,menu,and cart page is added
+[33ma1b1aeb[m Merge pull request #10 from YonasZekarias/new-feature
+[33m16e700c[m sidebar is added
+[33me09ef65[m Merge pull request #7 from bekiman 1
+[33m6b99a45[m feedback and orderhistory page
+[33m1ae365a[m Merge pull request #6 from YonasZekarias/restaurant-menu
+[33mf865461[m restaurant and menu endpoint added
+[33m80865ad[m Add forgot and reset password pagesI
+[33m4b486e3[m Merge pull request #5 from YonasZekarias/beki.b
+[33m9d418d5[m feat: implement password reset functionality with OTP verification
+[33m22a8a1a[m feat: enhance authentication and validation processes
+[33m2ec87b1[m verification ui is changed
+[33m82b8a19[m Add verification code handling and OTP verification route
+[33med03eb1[m Updated VerificationCode component
+[33mc0f85ca[m Add frontend files
+[33m32420e5[m Merge pull request #4 from YonasZekarias/backend-auth
+[33m0e81de5[m auth except google auth
+[33m63865a2[m auth except google auth
+[33md0fed05[m Merge pull request #3 from YonasZekarias/YonasZekarias-patch-3
+[33md6b121d[m[33m ([m[1;31morigin/YonasZekarias-patch-3[m[33m)[m Add files via upload
+[33m522c142[m Merge pull request #2 from YonasZekarias/YonasZekarias-patch-2
+[33mefa0f22[m[33m ([m[1;31morigin/YonasZekarias-patch-2[m[33m)[m Create README.md
+[33m1c1bb0d[m Merge pull request #1 from YonasZekarias/YonasZekarias-patch-1
+[33ma17ba6d[m[33m ([m[1;31morigin/YonasZekarias-patch-1[m[33m)[m Create README.md
+[33m3d0397d[m Initial commit
