@@ -21,7 +21,7 @@ const Sidebar = () => {
     { label: "Dashboard", icon: FiHome, path: "/restaurant/dashboard" },
     { label: "Menu", icon: FiBookOpen, path: "/restaurant/menu" },
     { label: "Inventory", icon: FiBox, path: `/inventory/${restaurantId}` },
-    { label: "Orders", icon: FiShoppingCart, path: "/restaurant/orders" },
+    { label: "Create Driver", icon: FiShoppingCart, path: "/restaurant/create" },
     { label: "Status", icon: FiActivity, path: "/restaurant/status" },
     { label: "Settings", icon: FiSettings, path: "/restaurant/settings" },
   ];

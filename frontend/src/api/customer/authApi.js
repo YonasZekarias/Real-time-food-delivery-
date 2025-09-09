@@ -34,7 +34,7 @@ export const logoutApi = async () => {
 // Refresh / check auth
 export const refreshTokenApi = async () => {
   try {
-    const res = await api.get("/auth/refresh-token");
+    const res = await api.post("/auth/refresh-token");
     return { success: true, data: res.data.data };
   } catch (err) {
     return { success: false, message: handleError(err, "Session expired") };

@@ -32,6 +32,8 @@ import Dashboard from "./pages/restaurant/Dashboard";
 import AddMenuItem from "./pages/restaurant/MenuManager";
 import MenuManagement from "./pages/restaurant/MenuManagementpage";
 import InventoryPage from "./pages/restaurant/InventoryPage";
+import CreateDriver from "./pages/restaurant/createDriver";
+import StatsDashboard from "./pages/restaurant/StatsDashboard";
 
 // Admin Pages
 import AdminDashboard from "./pages/admin/AdminDashboard";
@@ -39,6 +41,12 @@ import UserManagement from "./pages/admin/UserManagement";
 import RestaurantManagement from "./pages/admin/RestaurantManagement";
 import PendingRestaurants from "./pages/admin/PendingRestaurants";
 
+
+import DriverOrders from "./pages/driver/DriverOrders";
+import LoginPage from "./pages/driver/Login";
+import DriverVerificationCode from "./components/driver/VerificationCode";
+import DriverEarnings from "./pages/driver/DriverEarnings";
+import DriverOrderStatus from "./pages/driver/DriverOrderStatus";
 function App() {
   const { checkAuth } = useAuthStore();
 
@@ -83,19 +91,14 @@ function App() {
           <Route path="/menu/:restaurantId" element={<MenuPage />} />
           <Route path="/cart" element={<CartPage />} />
           <Route path="/checkout" element={<CheckoutPage />} />
-          <Route
-            path="/order-confirmation"
-            element={<OrderConfirmationPage />}
-          />
+          <Route path="/order-confirmation" element={<OrderConfirmationPage />}/>
           <Route path="/order-status" element={<OrderStatus />} />
+
 
           {/* Restaurant Pages */}
           <Route path="/restaurant/login" element={<RestaurantLogin />} />
           <Route path="/restaurant/signup" element={<RestaurantSignup />} />
-          <Route
-            path="/restaurant/verify"
-            element={<RestaurantVerificationCode />}
-          />
+          <Route path="/restaurant/verify" element={<RestaurantVerificationCode />}/>
 
           <Route
             path="/restaurant/dashboard"
@@ -129,6 +132,52 @@ function App() {
               </PrivateRoute>
             }
           />
+          <Route
+            path="/restaurant/create"
+            element={
+              <PrivateRoute allowedRoles={["restaurant"]}>
+                <CreateDriver />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/restaurant/status"
+            element={
+              <PrivateRoute allowedRoles={["restaurant"]}>
+                <StatsDashboard />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="/driver/orders/:driverId"
+            element={
+              <PrivateRoute allowedRoles={["driver"]}>
+                <DriverOrders />
+              </PrivateRoute>
+            }
+          />
+          <Route path="/driver/verify" element={<DriverVerificationCode />} />
+          <Route
+            path="/driver/status/:driverId"
+            element={
+              <PrivateRoute allowedRoles={["driver"]}>
+                <DriverOrderStatus />
+              </PrivateRoute>
+            }
+          />
+          <Route path="/driver/login" element={<LoginPage />} />
+          <Route
+            path="/driver/earnings"
+            element={
+              <PrivateRoute allowedRoles={["driver"]}>
+                <DriverEarnings />
+              </PrivateRoute>
+            }
+          />
+
+
+
 
           {/* Admin Pages */}
           <Route
