@@ -16,7 +16,7 @@ const handleError = (err, defaultMsg) =>
 // Get cart
 export const fetchCartApi = async () => {
   try {
-    const res = await api.get("/");
+    const res = await api.get("/getCart");
     return { success: true, data: res.data.data };
   } catch (err) {
     return { success: false, message: handleError(err, "Failed to load cart") };
@@ -26,7 +26,7 @@ export const fetchCartApi = async () => {
 // Add item
 export const addToCartApi = async (restaurantId, menuItemId, quantity) => {
   try {
-    await api.post("/", { restaurantId, menuItemId, quantity });
+    await api.post("/addToCart", { restaurantId, menuItemId, quantity });
     return { success: true };
   } catch (err) {
     return { success: false, message: handleError(err, "Failed to add item") };
@@ -36,7 +36,7 @@ export const addToCartApi = async (restaurantId, menuItemId, quantity) => {
 // Update item quantity
 export const updateCartItemApi = async (cartId, quantity) => {
   try {
-    await api.put(`/${cartId}`, { quantity });
+    await api.put(`/updateCart/${cartId}`, { quantity });
     return { success: true };
   } catch (err) {
     return { success: false, message: handleError(err, "Failed to update item") };
@@ -46,7 +46,7 @@ export const updateCartItemApi = async (cartId, quantity) => {
 // Remove single item
 export const removeFromCartApi = async (cartId) => {
   try {
-    await api.delete(`/${cartId}`);
+    await api.delete(`/removeFromCart/${cartId}`);
     return { success: true };
   } catch (err) {
     return { success: false, message: handleError(err, "Failed to remove item") };
@@ -56,7 +56,7 @@ export const removeFromCartApi = async (cartId) => {
 // Clear all items for a restaurant
 export const clearCartApi = async (restaurantId) => {
   try {
-    await api.delete(`/${restaurantId}`);
+    await api.delete(`/deleteCart/${restaurantId}`);
     return { success: true };
   } catch (err) {
     return { success: false, message: handleError(err, "Failed to clear cart") };
