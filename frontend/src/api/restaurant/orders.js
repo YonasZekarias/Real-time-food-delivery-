@@ -5,7 +5,7 @@ export const fetchRestaurantOrders = async (restaurantId) => {
       `http://localhost:5000/api/delivery/restaurants/${restaurantId}/orders`,
       {
         method: "GET",
-        credentials: "include", // 🔑 HttpOnly cookie usage
+        credentials: "include", // 🔑 HttpOnly cookie usagez
       }
     );
     if (!res.ok) {

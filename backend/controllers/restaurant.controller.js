@@ -253,23 +253,56 @@ const restaurantStats = async (req, res) => {
 const getAllOrder = async (req, res) => {
   try {
     const restaurantId = req.params.restaurantId;
-    const restaurant = await Restaurant.findOne({ ownerId: restaurantId });
+
+    // Find the restaurant
+    const restaurant = await Restaurant.findById(restaurantId);
     if (!restaurant) {
-      return res
-        .status(403)
-        .json({ message: "Not authorized: Restaurant not found" });
+      return res.status(404).json({ message: "Restaurant not found" });
     }
 
+    // Authorization check (only owner or admin can access)
+    if (
+      req.user.role !== "admin" &&
+      !restaurant.ownerId.equals(req.user._id)
+    ) {
+      return res
+        .status(403)
+        .json({ message: "Not authorized to access this restaurant's orders" });
+    }
+
+    // Fetch orders
     const orders = await Order.find({ restaurantId }).populate(
       "customerId",
       "name email phone"
     );
+
     res.status(200).json({ orders });
   } catch (error) {
     logger.error("Error fetching orders:", error);
     res.status(500).json({ message: "Server error" });
   }
 };
+
+// const getAllOrder = async (req, res) => {
+//   try {
+//     const restaurantId = req.params.restaurantId;
+//     const restaurant = await Restaurant.findOne({ ownerId: restaurantId });
+//     if (!restaurant) {
+//       return res
+//         .status(403)
+//         .json({ message: "Not authorized: Restaurant not found" });
+//     }
+
+//     const orders = await Order.find({ restaurantId }).populate(
+//       "customerId",
+//       "name email phone"
+//     );
+//     res.status(200).json({ orders });
+//   } catch (error) {
+//     logger.error("Error fetching orders:", error);
+//     res.status(500).json({ message: "Server error" });
+//   }
+// };
 const getOrderById = async (req, res) => {
   try {
     const { orderId } = req.params;
