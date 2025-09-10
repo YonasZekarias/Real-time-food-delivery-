@@ -1,4 +1,3 @@
-// src/pages/restaurant/MenuPage.jsx
 import { useEffect, useState } from "react";
 import Sidebar from "../../components/restaurant/Sidebar";
 import useMenuStore from "../../store/restaurant/restaurantMenu";
@@ -24,6 +23,7 @@ export default function MenuPage() {
   const [formData, setFormData] = useState(initialFormState);
   const [editingItem, setEditingItem] = useState(null);
   const [showForm, setShowForm] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false); // mobile sidebar toggle
 
   useEffect(() => {
     fetchMenu();
@@ -52,16 +52,21 @@ export default function MenuPage() {
       await updateMenuItem(editingItem._id, formData);
     } else {
       await addMenuItem(formData);
-      await fetchMenu(); // Refresh immediately to show new item
+      await fetchMenu(); // Refresh immediately
     }
     closeForm();
   };
 
   return (
     <div className="flex">
-      <Sidebar />
+      {/* Sidebar */}
+      <Sidebar isOpen={sidebarOpen} setIsOpen={setSidebarOpen} />
 
-      <div className="p-6 ml-24 w-full">
+      {/* Main content */}
+      <div
+        className={`p-6 w-full transition-all duration-300
+          ${sidebarOpen ? "ml-64" : "ml-0"} sm:ml-24`}
+      >
         <h1 className="text-2xl font-bold mb-4">Restaurant Menu</h1>
 
         <button
@@ -98,11 +103,12 @@ export default function MenuPage() {
                     className="w-full h-[158px] object-cover rounded-t-lg"
                   />
                   <div className="p-4 flex flex-col justify-between flex-1">
-                    {/* Name & Description left, Price & Stock right */}
                     <div className="flex justify-between items-start mb-3">
                       <div className="flex flex-col">
                         <p className="font-semibold text-lg">{item.name}</p>
-                        <p className="text-sm text-gray-700">{item.description}</p>
+                        <p className="text-sm text-gray-700">
+                          {item.description}
+                        </p>
                       </div>
                       <div className="flex flex-col items-end">
                         <p className="text-gray-500 text-sm">${item.price}</p>
@@ -138,6 +144,7 @@ export default function MenuPage() {
         )}
       </div>
 
+      {/* Form Modal */}
       {showForm && (
         <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-white p-6 rounded shadow-lg w-96">
