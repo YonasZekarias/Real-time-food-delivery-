@@ -252,23 +252,57 @@ const restaurantStats = async (req, res) => {
 };
 const getAllOrder = async (req, res) => {
   try {
-    const restaurant = await Restaurant.findOne({ ownerId: req.user._id });
+    const restaurantId = req.params.restaurantId;
+
+    // Find the restaurant
+    const restaurant = await Restaurant.findById(restaurantId);
     if (!restaurant) {
+      return res.status(404).json({ message: "Restaurant not found" });
+    }
+
+    // Authorization check (only owner or admin can access)
+    if (
+      req.user.role !== "admin" &&
+      !restaurant.ownerId.equals(req.user._id)
+    ) {
       return res
         .status(403)
-        .json({ message: "Not authorized: Restaurant not found" });
+        .json({ message: "Not authorized to access this restaurant's orders" });
     }
-    const restaurantId = restaurant._id;
+
+    // Fetch orders
     const orders = await Order.find({ restaurantId }).populate(
       "customerId",
       "name email phone"
     );
+
     res.status(200).json({ orders });
   } catch (error) {
     logger.error("Error fetching orders:", error);
     res.status(500).json({ message: "Server error" });
   }
 };
+
+// const getAllOrder = async (req, res) => {
+//   try {
+//     const restaurantId = req.params.restaurantId;
+//     const restaurant = await Restaurant.findOne({ ownerId: restaurantId });
+//     if (!restaurant) {
+//       return res
+//         .status(403)
+//         .json({ message: "Not authorized: Restaurant not found" });
+//     }
+
+//     const orders = await Order.find({ restaurantId }).populate(
+//       "customerId",
+//       "name email phone"
+//     );
+//     res.status(200).json({ orders });
+//   } catch (error) {
+//     logger.error("Error fetching orders:", error);
+//     res.status(500).json({ message: "Server error" });
+//   }
+// };
 const getOrderById = async (req, res) => {
   try {
     const { orderId } = req.params;
@@ -360,6 +394,29 @@ const assignDriverToOrder = async (req, res) => {
 };
 const activeDrivers = async (req, res) => {
   try {
+    const { restaurantId } = req.params;
+
+    // ✅ Check if restaurant exists
+    const restaurant = await Restaurant.findById(restaurantId);
+    if (!restaurant) {
+      return res.status(404).json({ message: "Restaurant not found" });
+    }
+
+    // ✅ Find active drivers linked to this restaurant
+    const drivers = await User.find({
+      role: "driver",
+      restaurantId: restaurant._id,
+      status: "available",
+    }).select("-password"); // exclude sensitive fields
+
+    res.json({ drivers });
+  } catch (error) {
+    console.error("Error fetching active drivers:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+const restaurantOrderStat = async (req, res) => {
+  try {
     const restaurant = await Restaurant.findOne({ ownerId: req.user._id });
     if (!restaurant) {
       return res
@@ -367,15 +424,39 @@ const activeDrivers = async (req, res) => {
         .json({ message: "Not authorized: Restaurant not found" });
     }
     const restaurantId = restaurant._id;
-    // Find active drivers for this restaurant
-    const drivers = await User.find({
-      role: "driver",
-      restaurantId: mongoose.Types.ObjectId(restaurantId),
-      status: "active",
+
+    // Get order statistics for the restaurant
+    const totalOrders = await Order.countDocuments({ restaurantId });
+    const completedOrders = await Order.countDocuments({
+      restaurantId,
+      status: "completed",
     });
-    res.status(200).json({ drivers });  
+    const pendingOrders = await Order.countDocuments({
+      restaurantId,
+      status: "pending",
+    });
+    const preparingOrders = await Order.countDocuments({
+      restaurantId,
+      status: "preparing",
+    });
+    const deliveringOrders = await Order.countDocuments({
+      restaurantId,
+      status: { $in: ["picked", "en_route"] },
+    });
+    const cancelledOrders = await Order.countDocuments({
+      restaurantId,
+      status: "cancelled",
+    });
+    res.status(200).json({
+      totalOrders,
+      completedOrders,
+      pendingOrders,
+      preparingOrders,
+      deliveringOrders,
+      cancelledOrders,
+    });
   } catch (error) {
-    logger.error("Error fetching active drivers:", error);
+    logger.error("Error fetching restaurant order statistics:", error);
     res.status(500).json({ message: "Server error" });
   }
 };
@@ -394,5 +475,6 @@ module.exports = {
   getOrderById,
   inviteDriver,
   assignDriverToOrder,
-  activeDrivers,  
+  activeDrivers,
+  restaurantOrderStat
 };

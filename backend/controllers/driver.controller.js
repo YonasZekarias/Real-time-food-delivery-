@@ -18,19 +18,46 @@ const registerDriver = async (req, res) => {
     }
 }
 const driverOrders = async (req, res) => {
-    try {
-        const {driverId} = req.params;
-        const driver = await User.find({ _id: driverId });
-        if (!driver) return res.status(404).json({ message: "Driver not found" });
-        const orders = await Order.find({ driverId: mongoose.Types.ObjectId(driverId), deleted: false });
-        if (!orders) return res.status(404).json({ message: "No orders found for this driver" });
-        res.status(200).json({ status: "success", data: { driver, orders } });
+  try {
+    const { driverId } = req.params;
 
-    } catch (error) {
-        logger.error(`Error fetching driver orders: ${error.message}`);
-        res.status(500).json({ message: error.message });
+    // Find driver
+    const driver = await User.findById(driverId).select("-password");
+    if (!driver) {
+      return res.status(404).json({ message: "Driver not found" });
     }
-}
+
+    // Find orders
+    const orders = await Order.find({
+      driverId: new mongoose.Types.ObjectId(driverId),
+      deleted: false,
+    });
+
+    if (orders.length === 0) {
+      return res.status(404).json({ message: "No orders found for this driver" });
+    }
+
+    res.status(200).json({ status: "success", data: { driver, orders } });
+  } catch (error) {
+    logger.error(`Error fetching driver orders: ${error.message}`);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// const driverOrders = async (req, res) => {
+//   try {
+//       const {driverId} = req.params;
+//       const driver = await User.find({ _id: driverId });
+//       if (!driver) return res.status(404).json({ message: "Driver not found" });
+//       const orders = await Order.find({ driverId: mongoose.Types.ObjectId(driverId), deleted: false });
+//       if (!orders) return res.status(404).json({ message: "No orders found for this driver" });
+//       res.status(200).json({ status: "success", data: { driver, orders } });
+
+//   } catch (error) {
+//       logger.error(`Error fetching driver orders: ${error.message}`);
+//       res.status(500).json({ message: error.message });
+//   }
+// }
 const changeDriverStatus = async (req, res) => {
     try {
         const driver = await User.findById(req.user._id);

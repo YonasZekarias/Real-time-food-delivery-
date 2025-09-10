@@ -33,12 +33,12 @@ export default function Dashboard() {
   return (
     <div className="flex min-h-screen">
       {/* Sidebar */}
-      <aside className="fixed top-0 left-0 h-full z-10">
+      <aside className="fixed top-0 left-0 h-full z-10 w-20 sm:w-24">
         <Sidebar />
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 ml-20 sm:ml-24 p-8 bg-gray-100 min-h-screen">
+      <main className="flex-1 ml-20 sm:ml-24 p-4 sm:p-8 bg-gray-100 min-h-screen">
         <h1 className="text-3xl font-bold mb-8 text-gray-800">Orders Dashboard</h1>
 
         {/* Summary Cards */}

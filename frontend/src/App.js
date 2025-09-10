@@ -34,6 +34,8 @@ import MenuManagement from "./pages/restaurant/MenuManagementpage";
 import InventoryPage from "./pages/restaurant/InventoryPage";
 import CreateDriver from "./pages/restaurant/createDriver";
 import StatsDashboard from "./pages/restaurant/StatsDashboard";
+import ActiveDriversPage from "./pages/restaurant/ActiveDriversPage";
+import AssignDriverPage from "./pages/restaurant/AssignDriver";
 
 // Admin Pages
 import AdminDashboard from "./pages/admin/AdminDashboard";
@@ -145,6 +147,22 @@ function App() {
             element={
               <PrivateRoute allowedRoles={["restaurant"]}>
                 <StatsDashboard />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/restaurant/active-drivers"
+            element={
+              <PrivateRoute allowedRoles={["restaurant"]}>
+                <ActiveDriversPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/restaurant/assign-driver"
+            element={
+              <PrivateRoute allowedRoles={["restaurant"]}>
+                <AssignDriverPage />
               </PrivateRoute>
             }
           />
