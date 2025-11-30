@@ -1,4 +1,3 @@
-// backend/swagger.js
 const swaggerAutogen = require("swagger-autogen")();
 
 const doc = {
